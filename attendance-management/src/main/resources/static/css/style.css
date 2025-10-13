@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+header {
+	background-color: #99CCFF;
+	padding: 10px;
+	border: 2px solid #000;
+}
+
+body { .title { padding:20px;
+	
+}
+
+.side {
+	background-color: #99CCFF;
+	border-right: 2px solid #000;
+	border-left: 2px solid #000;
+	width: 200px;
+	height: 800px;
+	text-align: center;
+}
+
+.sidemenu {
+	padding-top: 40px;
+	width: 200px;
+	height: 60px;
+	border-bottom: 2px solid #000;
+}
+
+.content {
+	width: 250px;
+	height: 800px;
+	text-align: left;
+	margin-left: 40px;
+}
+
+article {
+	display: flex;
+}
+
+.title {
+	margin-left: 40px;
+}
+
+.userId {
+	margin-left: 200px;
+	margin-right: 40px;
+}
+
+.passname {
+	margin-left: 200px;
+	margin-right: 40px;
+}
+
+.submitname {
+	color: white;
+	background: #1a1aff;
+	margin-left: 600px;
+	padding: 5px;
+}
+}
