@@ -2,15 +2,18 @@ package com.example.attendance.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.attendance.entity.Account;
 import com.example.attendance.repository.AttendanceRepository;
+
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -18,6 +21,16 @@ public class LoginService implements UserDetailsService {
 	@Autowired
 	private AttendanceRepository attendanceRepository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	// パスワードをハッシュ化
+	public void registerUser(Account account) {
+		String pass = passwordEncoder.encode(account.getPassword());
+		account.setPassword(pass);
+		attendanceRepository.save(account);
+	}
+	
 	// Spring Securityがログイン時にユーザー情報を取得するメソッド
 	@Override
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -41,12 +54,12 @@ public class LoginService implements UserDetailsService {
 		String role;
 		// 管理者
 		if (account.getAuthority() == 1) {
-			role = "ROLE_ADMINISTRATOR";
+			role = "ROLE_ADMIN";
 			// 一般
 		} else if (account.getAuthority() == 2) {
-			role = "ROLE_GENERAL";
+			role = "ROLE_USER";
+			// 管理者、一般以外
 		} else {
-			// 仮に初期化
 			role = "ROLE_UNKNOWN";
 			throw new UsernameNotFoundException("設定された権限の形式が違います: " + account.getAuthority());
 		}
@@ -58,8 +71,8 @@ public class LoginService implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(
 				// ユーザーID
 				account.getUserId().toString(),
-				// パスワード（一時的に暗号化しない）
-				"{noop}" + account.getPassword(),
+				// パスワード
+				account.getPassword(),
 				// 権限
 				List.of(authority));
 	}
