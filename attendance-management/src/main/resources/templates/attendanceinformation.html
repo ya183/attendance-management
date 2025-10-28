@@ -29,6 +29,42 @@
 
 			<h2>勤怠情報</h2>
 
+			<form th:action="@{/attendanceinformation/}" method="post">
+				<!--  <input type="hidden" name="userId" th:value="${account.userId}"> -->
+				<input type="hidden" name="userId"
+					th:value="${account != null ? account.userId : ''}"> <select
+					name="inputDate">
+					<option value="2025-09">2025年09月度</option>
+					<option value="2025-10">2025年10月度</option>
+					<option value="2025-11">2025年11月度</option>
+					<option value="2025-11">2025年12月度</option>
+				</select>
+				<button type="submit" name="submitname" class="submitname">表示</button>
+			</form>
+
+			<table>
+				<tr>
+					<th>ユーザーID</th>
+					<th>日付</th>
+					<th>出勤時刻</th>
+					<th>退勤時刻</th>
+					<th>休憩</th>
+					<th>勤務時間</th>
+					<th>残業</th>
+					<th>ステータス</th>
+				</tr>
+
+				<tr th:each="attend : ${attendanceinformation}">
+					<td th:text="${attend.id?.userId}"></td>
+					<td th:text="${attend.id?.date}"></td>
+					<td th:text="${attend.clock_in}"></td>
+					<td th:text="${attend.clock_out}"></td>
+					<td th:text="${attend.break_time}"></td>
+					<td th:text="${attend.working_hours}"></td>
+					<td th:text="${attend.overtime_hours}"></td>
+					<td th:text="${attend.status}"></td>
+				</tr>
+			</table>
 		</div>
 	</article>
 </body>
