@@ -6,16 +6,16 @@ header {
 	border: 2px solid #000;
 }
 
-body { .title { padding:20px;
-	
-}
+
+
+.title { padding:20px;}
 
 .side {
 	background-color: #99CCFF;
 	border-right: 2px solid #000;
 	border-left: 2px solid #000;
 	width: 200px;
-	height: 1000px;
+	height: 1200px;
 	text-align: center;
 }
 
@@ -50,6 +50,7 @@ body { .title { padding:20px;
 
 article {
 	display: flex;
+	
 }
 
 .title {
@@ -72,4 +73,27 @@ article {
 	margin-left: 600px;
 	padding: 5px;
 }
+
+.titlenew{
+	text-align: left !important;;
+}
+
+
+.outbutton {
+	color: white;
+	background: orange;
+	margin-left: 600px;
+	padding: 5px;
+}
+
+.titleregister{
+	background:rgb(255, 210, 128);
+	padding: 7px;
+}
+
+.submiregist{
+	color: white;
+	background: #1a1aff;
+	margin-left: 920px;
+	padding: 5px;
 }

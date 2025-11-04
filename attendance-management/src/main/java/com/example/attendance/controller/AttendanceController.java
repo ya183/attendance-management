@@ -2,6 +2,7 @@ package com.example.attendance.controller;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,6 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.example.attendance.entity.Account;
 import com.example.attendance.entity.AttendanceInformationId;
 import com.example.attendance.entity.Attendance_information;
+import com.example.attendance.form.AttendanceForm;
+import com.example.attendance.form.AttendanceFormList;
 import com.example.attendance.repository.AttendanceInformationRepository;
 import com.example.attendance.repository.AttendanceRepository;
 import com.example.attendance.service.AttendInfoService;
@@ -86,7 +90,8 @@ public class AttendanceController {
 
 	// 勤怠情報
 	@GetMapping("/attendanceinformation")
-	public ModelAndView attendanceInformation(ModelAndView mv, Principal principal) {
+	public ModelAndView attendanceInformation(ModelAndView mv, Principal principal,
+			@RequestParam(value = "date", required = false) String date) {
 		mv.setViewName("attendanceinformation");
 
 		if (principal == null) {
@@ -108,7 +113,12 @@ public class AttendanceController {
 		Account account = attendanceRepository.findByUserId(id);
 		System.out.println("アカウント" + account);
 
+		if (date == null || date.isEmpty()) {
+			date = LocalDate.now().toString().substring(0, 7); // YYYY-MM
+		}
+
 		mv.addObject("account", account);
+		mv.addObject("yearMonth", date);
 		mv.addObject("attendanceinformation", new ArrayList<>());
 
 		return mv;
@@ -116,22 +126,25 @@ public class AttendanceController {
 
 	// 勤怠情報表示ボタン押下後（フォーム送信後の処理）
 	@PostMapping("/attendanceinformation/")
-	public String attendanceInfoSearch(@RequestParam("inputDate") String yearMonth,
-			@RequestParam(value = "userId", required = false) Integer userId, Model model) {
+	public ModelAndView attendanceInfoSearch(@RequestParam("inputDate") String yearMonth,
+			@RequestParam(value = "userId", required = false) Integer userId, ModelAndView mv) {
 
 		// ログイン中のユーザー情報を取得
 		if (userId == null) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			userId = Integer.valueOf(auth.getName());
 		}
+
 		// URLパラメーターでuserIdとdateの情報を渡す
-		return "redirect:/attendanceinformation/info?userId=" + userId + "&date=" + yearMonth;
+		mv.setViewName("redirect:/attendanceinformation/info?userId=" + userId + "&date=" + yearMonth);
+		return mv;
 	}
 
 	// 勤怠情報表示ボタン押下後（画面表示用）
 	@GetMapping("/attendanceinformation/info")
 	public ModelAndView infoSearch(@RequestParam("userId") int userId, @RequestParam("date") String yearMonth,
 			ModelAndView mv) {
+
 		// HTMLファイルを指定
 		mv.setViewName("attendanceinformation");
 
@@ -143,11 +156,73 @@ public class AttendanceController {
 		// DBから検索した結果をリストに格納
 		List<Attendance_information> attendanceList = attendInfoService.loadAttendInfoByUsername(attendId, yearMonth);
 
+		// nullの場合は空
+		if (attendanceList == null) {
+			attendanceList = new ArrayList<>();
+		}
+
 		// HTMLにデータを渡す
 		mv.addObject("attendanceinformation", attendanceList);
 		mv.addObject("yearMonth", yearMonth);
 
 		return mv;
+	}
+
+	// １ヶ月分の登録
+	@GetMapping("/attendanceinformation/new")
+	public ModelAndView attendnew(@RequestParam("date") String yearMonth, ModelAndView mv) {
+
+		// HTML名をセット
+		mv.setViewName("attendnew");
+
+		// 登録データを格納するリストを作成
+		AttendanceFormList listform = new AttendanceFormList();
+
+		// 入力フォーム
+		List<AttendanceForm> attendForm = new ArrayList<>();
+
+		// YearMonth型に変換
+		YearMonth yearMonthstr = YearMonth.parse(yearMonth);
+
+		// 月の日数を取得
+		int dayLength = yearMonthstr.lengthOfMonth();
+
+		// 日数分作成
+		for (int i = 1; i <= dayLength; i++) {
+			AttendanceForm form = new AttendanceForm();
+			form.setDayForm(LocalDate.of(yearMonthstr.getYear(), yearMonthstr.getMonth(), i));
+			attendForm.add(form);
+		}
+
+		// 入力された１ヶ月分のデータをセット
+		listform.setAttendForm(attendForm);
+
+		// 年月をHTMLに渡す
+		mv.addObject("yearMonth", yearMonth);
+		// 入力された１ヶ月分のデータをHTMLに渡す
+		mv.addObject("attendFormList", listform);
+
+		return mv;
+	}
+
+	// １ヶ月分の登録を受け取りDB更新
+	@PostMapping("/attendanceinformation/new")
+	public ModelAndView attendNewPost(@ModelAttribute("attendFormList") AttendanceFormList listform, ModelAndView mv) {
+
+		// HTML名をセット
+		mv.setViewName("attendnew");
+
+		// 1ヶ月分のデータを入手
+		List<AttendanceForm> form = listform.getAttendForm();
+
+		// DB更新
+		attendInfoService.SaveAllList(form);
+
+		// 入力された１ヶ月分のデータをHTMLに渡す
+		mv.addObject("attendFormList", listform);
+
+		return mv;
+
 	}
 
 }

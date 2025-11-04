@@ -13,7 +13,7 @@
 	<article>
 		<div class="side">
 			<div class="sidemenu">
-				<a th:href="@{/attendanceregistration}">勤怠登録</a>
+				<a th:href="@{/attendregister}">勤怠登録</a>
 			</div>
 			<div class="sidemenu">
 				<a th:href="@{/changerequest}">変更申請</a>
@@ -34,15 +34,32 @@
 				<input type="hidden" name="userId"
 					th:value="${account != null ? account.userId : ''}"> <select
 					name="inputDate">
+					<option value="2025-08">2025年08月度</option>
 					<option value="2025-09">2025年09月度</option>
 					<option value="2025-10">2025年10月度</option>
 					<option value="2025-11">2025年11月度</option>
-					<option value="2025-11">2025年12月度</option>
+					<option value="2025-12">2025年12月度</option>
 				</select>
 				<button type="submit" name="submitname" class="submitname">表示</button>
+				
+				<div th:if="${#lists.isEmpty(attendanceinformation)}">
+				<a th:href="@{/attendanceinformation/new(date=${yearMonth})}">新規登録</a>
+				
+				</div>
+			
 			</form>
-
+<!-- 
+			<form th:action="@{/attendanceinformation/new}" method="get">
+			
+				<div th:if="${#lists.isEmpty(attendanceinformation)}">
+				<input type="hidden" name="date" th:value="${yearMonth}">
+					<button type="submit" name="submitname" class="submitname">新規作成</button>
+				</div>
+			</form>
+-->
 			<table>
+
+				<div th:if="${not #lists.isEmpty(attendanceinformation)}">
 				<tr>
 					<th>ユーザーID</th>
 					<th>日付</th>
@@ -53,7 +70,7 @@
 					<th>残業</th>
 					<th>ステータス</th>
 				</tr>
-
+				</div>
 				<tr th:each="attend : ${attendanceinformation}">
 					<td th:text="${attend.id?.userId}"></td>
 					<td th:text="${attend.id?.date}"></td>
