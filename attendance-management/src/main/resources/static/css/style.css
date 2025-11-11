@@ -1,8 +1,10 @@
 @charset "UTF-8";
 
 header {
+	display: flex;
+	justify-content: space-between;
 	background-color: #99CCFF;
-	padding: 10px;
+	padding: 10px 20px;
 	border: 2px solid #000;
 }
 
@@ -96,4 +98,8 @@ article {
 	background: #1a1aff;
 	margin-left: 920px;
 	padding: 5px;
+}
+
+.headerName{
+	text-align: right;
 }

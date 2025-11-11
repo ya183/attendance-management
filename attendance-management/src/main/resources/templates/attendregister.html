@@ -13,19 +13,41 @@
 		<div th:replace="fragments/sidebar :: sidebar"></div>
 		<div class="content">
 			<h2 class="titlenew">勤怠登録</h2>
-			
+
 			<p>以下の時刻で打刻します</p>
-			
-			<p><span id = "today"></span></p>
-			
+
+			<p>
+				<span id="today"></span>
+			</p>
+
+			<!-- 共通のtimeInput -->
+			<input type="time" id="timeInput" name="timeInput">
+
+
+			<!-- 出勤ボタン -->
+			<form th:action="@{/attendregister/clocin}" method="post">
+				<!-- 日付入力フォーム -->
+				<input type="hidden" id="dateInput" name="date"> <input
+					type="hidden" name="userId"
+					th:value="${account != null ? account.userId : ''}">
+				<button type="submit" name="submitname" class="submitname">出勤</button>
+			</form>
+
+			<!-- 退勤ボタン -->
+			<form th:action="@{/attendregister/clocout}" method="post">
+				<!-- 日付入力フォーム -->
+				<input type="hidden" id="dateInputOut" name="date"> <input
+					type="hidden" name="userId"
+					th:value="${account != null ? account.userId : ''}">
+				<button type="submit" name="outbutton" class="outbutton">退勤</button>
+			</form>
+
 			<!-- JavaScriptで本日の日付を表示 -->
 			<script>
-			
+			// 日付の取得
 			const today = new Date();
 			
-			<!-- 曜日の配列を用意 -->
 			const days = ["日","月","火","水","木","金","土"];
-			
 			
 			const dayOfWeek = days[today.getDay()];
 			
@@ -37,33 +59,43 @@
 			"(" + dayOfWeek + ")";
 			
 			document.getElementById("today").textContent = formatted;
-		    </script>
-		    
-		    <!-- 日付入力フォーム -->
-		    <input type="time" id = "timeInput">
-		    <script>
+			document.getElementById("dateInput").value = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
+			document.getElementById("dateInputOut").value = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
+
+			// timeInput
 		    const now = new Date();
-		    
 		    const hours = String(now.getHours()).padStart(2,'0');
 		    const minutes = String(now.getMinutes()).padStart(2,'0');
+		    timeInput.value = `${hours}:${minutes}`;
 		    
-		    const currentTime = `${hours}:${minutes}`;
+		    // 共通のtimeInputの値を各formにコピー 
+		    //ページ内の全フォームを取得
+		    document.querySelectorAll("form").forEach(form => {
+		    	//フォームが送信される直前に動くイベントを登録
+		    	form.addEventListener("submit",() =>{
+		    		//フォーム外にある共通の値を取得
+		    		const timeVal = document.getElementById("timeInput").value;
+		    		//input要素を作成
+		    		const hidden = document.createElement("input");
+		    		hidden.type = "hidden";
+		    		hidden.name = "timeInput";
+		    		hidden.value = timeVal;
+		    		//hiddenを送信するformの中に追加
+		    		form.appendChild(hidden);
+		    	});
+		    });
 		    
-		    document.getElementById("timeInput").value = currentTime;
-		    </script>
-		    
-		     <!-- 出勤ボタン -->
-		    <form th:action="@{/attendregister/clocin}" method="post">
-		     <button type="submit" name="submitname" class="submitname">出勤</button>
-		     </form>
-		     
-		     <!-- 退勤ボタン -->
-		    <form th:action="@{/attendregister/clocout}" method="post">
-		    <button type="submit" name="outbutton" class="outbutton">退勤</button>
-		    </form>
+		    //document.getElementById("timeInput").value = currentTime;		    
+			</script>
+			
+			<script th:if="${clockInSuccess}">
+            alert("出勤打刻が完了しました");
+            </script>
 
-</div>
-</article>
+
+
+		</div>
+	</article>
 
 </body>
 </html>

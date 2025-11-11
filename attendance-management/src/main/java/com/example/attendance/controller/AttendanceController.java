@@ -109,34 +109,47 @@ public class AttendanceController {
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
 
-		// DBからユーザー情報取得
-		Account account = attendanceRepository.findByUserId(id);
-		System.out.println("アカウント" + account);
-
-		if (date == null || date.isEmpty()) {
-			date = LocalDate.now().toString().substring(0, 7); // YYYY-MM
-		}
-
-		mv.addObject("account", account);
-		mv.addObject("yearMonth", date);
-		mv.addObject("attendanceinformation", new ArrayList<>());
-
+		mv.addObject("account", null);
+		mv.addObject("yearMonth", null);
+		mv.addObject("attendanceinformation", null);
+		
 		return mv;
 	}
 
 	// 勤怠情報表示ボタン押下後（フォーム送信後の処理）
 	@PostMapping("/attendanceinformation/")
-	public ModelAndView attendanceInfoSearch(@RequestParam("inputDate") String yearMonth,
+	public ModelAndView attendanceInfoSearch(Principal principal,@RequestParam("inputDate") String yearMonth,
 			@RequestParam(value = "userId", required = false) Integer userId, ModelAndView mv) {
-
-		// ログイン中のユーザー情報を取得
-		if (userId == null) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			userId = Integer.valueOf(auth.getName());
+		
+		// ログイン中のユーザーNullチェック
+		if (principal == null) {
+			// 未ログインならログインページへリダイレクト
+			mv.setViewName("redirect:/login");
+			return mv;
 		}
 
+		Integer id;
+		// userIdがinteger型かどうか判断
+		try {
+			//　userIdを数値化して取得
+			id = Integer.valueOf(principal.getName());
+		} catch (NumberFormatException e) {
+			// Spring Securityに認証失敗として処理（/login/errorに遷移）
+			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
+		}
+		
+		// DBからユーザー情報取得
+		Account account = attendanceRepository.findByUserId(id);
+		
+		// ログイン中のユーザの月単位の勤怠情報を取得
+		List<Attendance_information> attendanceList = attendanceInformationRepository.findByUserIdAndYearMonth(account.getUserId(),yearMonth);
+		
+		mv.addObject("account", account);
+		mv.addObject("yearMonth", yearMonth);
+		mv.addObject("attendanceinformation", attendanceList);
+
 		// URLパラメーターでuserIdとdateの情報を渡す
-		mv.setViewName("redirect:/attendanceinformation/info?userId=" + userId + "&date=" + yearMonth);
+		mv.setViewName("redirect:/attendanceinformation/info?userId=" + id + "&date=" + yearMonth);
 		return mv;
 	}
 

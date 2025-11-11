@@ -24,11 +24,19 @@ public interface AttendanceInformationRepository
 	List<Attendance_information> findByUserIdAndYearMonth(@Param("userId") int userId,
 			@Param("yearMonth") String yearMonth);
 
-//	// 出勤登録
-//	@Modifying
-//	@Transactional
-//	@Query("UPDATE Attendance_information a " + "SET a.clock_in = :clockin "
-//			+ "WHERE a.user_id = :userId AND date = :date")
-//	void updateclockIn(@Param("userId") Integer userId, @Param("date") LocalDate date,
-//			@Param("clock_in") LocalTime clock_in);
+	// 出勤登録
+	@Modifying
+	@Transactional
+	@Query("UPDATE Attendance_information a " + "SET a.clock_in = :clock_in "
+			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
+	int updateclockIn(@Param("userId") Integer userId, @Param("date") LocalDate date,
+			@Param("clock_in") LocalTime clock_in);
+
+	// 退勤登録
+	@Modifying
+	@Transactional
+	@Query("UPDATE Attendance_information a " + "SET a.clock_out = :clock_out "
+			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
+	int updateclockOut(@Param("userId") Integer userId, @Param("date") LocalDate date,
+			@Param("clock_out") LocalTime clock_in);
 }

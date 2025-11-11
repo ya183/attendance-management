@@ -29,22 +29,28 @@
 
 			<h2>勤怠情報</h2>
 
-			<form th:action="@{/attendanceinformation/}" method="post">
-				<!--  <input type="hidden" name="userId" th:value="${account.userId}"> -->
+			<form th:action="@{/attendanceinformation/}" method="post" id="monthForm">
+				
 				<input type="hidden" name="userId"
 					th:value="${account != null ? account.userId : ''}"> <select
-					name="inputDate">
-					<option value="2025-08">2025年08月度</option>
-					<option value="2025-09">2025年09月度</option>
-					<option value="2025-10">2025年10月度</option>
-					<option value="2025-11">2025年11月度</option>
-					<option value="2025-12">2025年12月度</option>
+					name="inputDate" onchange="document.getElementById('monthForm').submit()">
+					<option value="2025-07" th:selected="${yearMonth == '2025-07'}">2025年07月度</option>
+					<option value="2025-08" th:selected="${yearMonth == '2025-08'}">2025年08月度</option>
+					<option value="2025-09" th:selected="${yearMonth == '2025-09'}">2025年09月度</option>
+					<option value="2025-10" th:selected="${yearMonth == '2025-10'}">2025年10月度</option>
+					<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025年11月度</option>
+					<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025年12月度</option>
 				</select>
+				<!--  
 				<button type="submit" name="submitname" class="submitname">表示</button>
+				-->
 				
+				<!-- 勤怠情報ボタン初回表示時 -->
+				<div th:if="${attendanceinformation != null}">
+				<!-- 表示ボタン表示時 -->
 				<div th:if="${#lists.isEmpty(attendanceinformation)}">
 				<a th:href="@{/attendanceinformation/new(date=${yearMonth})}">新規登録</a>
-				
+				</div>
 				</div>
 			
 			</form>
