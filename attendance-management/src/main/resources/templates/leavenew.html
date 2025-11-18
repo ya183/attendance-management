@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:replace="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">休暇申請新規登録</h2>
+			<form th:action="@{/leavenew/register}" method="post">
+			<table border="1">
+				
+				<tr>
+					<th>申請者</th>
+					<td><span th:text="${loginId}"></span> </td>
+				</tr>
+				<tr>
+					<th>申請日</th>
+					<td><input type="date" name="application_date"/></td>
+				</tr>
+				<tr>
+					<th>希望休暇日</th>
+					<td><input type="date" name="change_date" /></td>
+				</tr>
+				<tr>
+					<th>変更理由</th>
+					<td><input type="text" name="reason"/></td>
+				</tr>
+				
+				
+			</table>
+			<input type="hidden" name="request_no" th:value="${requestNo}">
+			<button type="submit" name="submiregist" class="submiregist">申請</button>
+			</form>
+		</div>
+	</article>
+</body>
+</html>
