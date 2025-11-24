@@ -13,13 +13,9 @@
 	<article>
 		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
-			<h2 class="titlenew">休暇申請</h2>
-			
-			<a th:href="@{/leavenew}">新規作成</a>
+			<h2 class="titlenew">変更申請一覧</h2>
 
-			<h2 class="titlenew">休暇申請一覧</h2>
-
-			<form th:action="@{/leaveapplication}" method="post" id="monthForm">
+			<form th:action="@{/changeinformation}" method="post" id="monthForm">
 			
 			<select name="application_date"
 				onchange="document.getElementById('monthForm').submit()">
@@ -30,26 +26,20 @@
 				<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025/11</option>
 				<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025/12</option>
 			</select>
-			
-			
-			
+
 			</form>
 			
 			<table>
 				
 				<tr>
-				<th>管理番号</th>
 					<th>申請日</th>
-					<th>処理状況</th>
+					<th>従業員名</th>
 				</tr>
 				
 				<tr th:each="list : ${listRequest}">
-				    <td th:text="${list.id.requestNo}"></td>
 					<td th:text="${list.application_date}"></td>
-					<td><span th:if="${list.status} == 1">申請中</span>
-					    <span th:if="${list.status} == 2">完了</span>
-					</td>
-					<td><a th:href="@{/leavecorrect(requestNo=${list.id.requestNo})}">修正</a></td>
+					<td th:text="${list.id.userId}"></td>
+					<td><a th:href="@{/changedetail(requestNo=${list.id.requestNo},userId=${list.id.userId})}">詳細</a></td>
 				</tr>
 			</table>
 			

@@ -1,29 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>ホーム画面</title>
 <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
 </head>
 <body>
-	<header>
-		<h1>勤怠管理システム</h1>
-	</header>
+	<div th:replace="fragments/header :: header"></div>
+
 	<article>
-		<div class="side">
-			<div class="sidemenu">
-				<a th:href="@{/attendregister}">勤怠登録</a>
-			</div>
-			<div class="sidemenu">
-				<a th:href="@{/changerequest}">変更申請</a>
-			</div>
-			<div class="sidemenu">
-				<a th:href="@{/vacationrequest}">休暇申請</a>
-			</div>
-			<div class="sidemenu">
-				<a th:href="@{/attendanceinformation}">勤怠情報</a>
-			</div>
-		</div>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
 
 			<h2>ホーム画面</h2>

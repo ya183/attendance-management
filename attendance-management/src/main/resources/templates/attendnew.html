@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -12,7 +13,7 @@
 
 	<!-- サイドバー呼び出し -->
 	<article>
-		<div th:replace="fragments/sidebar :: sidebar"></div>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
 			<h2 class="titlenew">勤怠レコード登録</h2>
 

@@ -13,8 +13,8 @@
 	<article>
 		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
-			<h2 class="titlenew">変更申請修正</h2>
-			<form th:action="@{/changecorrect}" method="post">
+			<h2 class="titlenew">変更申請詳細</h2>
+			
 			<table border="1">
 				
 				<tr>
@@ -23,32 +23,40 @@
 				</tr>
 				<tr>
 					<th>申請日</th>
-					<td><input type="date" name="application_date"/></td>
+					<td><span th:text="${applicationDate}"></span></td>
 				</tr>
 				<tr>
 					<th>変更対象日</th>
-					<td><input type="date" name="change_date" /></td>
+					<td><span th:text="${changeDate}"></span></td>
 				</tr>
 				<tr>
 					<th>修正後出勤時間</th>
-					<td><input type="time" step="0.01" min="0" name="revised_clock_in"
-							/></td>
+					<td><span th:text="${revisedClockIn}"></span></td>
 				</tr>
 				<tr>
 					<th>修正後退勤時間</th>
-					<td><input type="time" step="0.01" min="0" name="revised_clock_out"
-							/></td>
+					<td><span th:text="${revisedClockOut}"></span></td>
 				</tr>
 				<tr>
 					<th>変更理由</th>
-					<td><input type="text" name="reason"/></td>
+					<td><span th:text="${reason}"></span></td>
 				</tr>
 				
 				
 			</table>
-			<input type="hidden" name="request_no" th:value="${requestNo}">
-			<button type="submit" name="submiregist" class="submiregist">修正</button>
+			<form th:action="@{/changedetail}" method="post">
+			<input type="hidden" name="requestNo" th:value="${requestNo}">
+			<input type="hidden" name="userId" th:value="${loginId}">
+			<button type="submit" name="submiregist" class="submiregist">承認</button>
 			</form>
+			
+			<script th:inline="javascript">
+			if([[${registerSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
+			
+
 		</div>
 	</article>
 </body>

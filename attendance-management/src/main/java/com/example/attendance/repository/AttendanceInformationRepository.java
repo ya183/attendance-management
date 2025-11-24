@@ -20,7 +20,8 @@ public interface AttendanceInformationRepository
 
 	// 1月分のレコードを検索
 	@Query(value = "SELECT * FROM attendance_information " + "WHERE user_id = :userId "
-			+ "AND TO_CHAR(date, 'YYYY-MM') = :yearMonth", nativeQuery = true)
+			+ "AND TO_CHAR(date, 'YYYY-MM') = :yearMonth " +
+            "ORDER BY date ASC",nativeQuery = true)
 	List<Attendance_information> findByUserIdAndYearMonth(@Param("userId") int userId,
 			@Param("yearMonth") String yearMonth);
 

@@ -1,5 +1,7 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="sidebar">
+
+<div xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	th:fragment="sidebar">
 
 	<div class="side">
 		<div class="sidemenu">
@@ -14,6 +16,29 @@
 		<div class="sidemenu">
 			<a th:href="@{/attendanceinformation}">勤怠情報</a>
 		</div>
-	</div>
+	
 
+
+	<!-- 管理者のみ表示 -->
+	<div sec:authorize="hasRole('ADMIN')">
+		<p class="adminmenu">管理者機能</p>
+
+		<div class="sidemenuchange">
+			<a th:href="@{/changeinformation}">変更申請一覧</a>
+		</div>
+
+		<div class="sidemenu">
+			<a th:href="@{/leaveinformation}">休暇申請一覧</a>
+		</div>
+
+		<div class="sidemenu">
+			<a th:href="@{/employeechange}">社員検索/変更/削除</a>
+		</div>
+
+		<div class="sidemenu">
+			<a th:href="@{/attendanceinformation}">社員登録</a>
+		</div>
+		
+		</div>
+	</div>
 </div>

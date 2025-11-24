@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">f.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -13,8 +13,8 @@
 	<article>
 		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
-			<h2 class="titlenew">休暇申請新規登録</h2>
-			<form th:action="@{/leavenew/register}" method="post">
+			<h2 class="titlenew">休暇申請詳細</h2>
+			
 			<table border="1">
 				
 				<tr>
@@ -23,21 +23,23 @@
 				</tr>
 				<tr>
 					<th>申請日</th>
-					<td><input type="date" name="application_date"/></td>
+					<td><span th:text="${applicationDate}"></span></td>
 				</tr>
 				<tr>
-					<th>希望休暇日</th>
-					<td><input type="date" name="change_date" /></td>
+					<th>変更対象日</th>
+					<td><span th:text="${changeDate}"></span></td>
 				</tr>
 				<tr>
 					<th>変更理由</th>
-					<td><input type="text" name="reason"/></td>
+					<td><span th:text="${reason}"></span></td>
 				</tr>
 				
 				
 			</table>
-			<input type="hidden" name="request_no" th:value="${requestNo}">
-			<button type="submit" name="submiregist" class="submiregist">申請</button>
+			<form th:action="@{/leavedetail}" method="post">
+			<input type="hidden" name="requestNo" th:value="${requestNo}">
+			<input type="hidden" name="userId" th:value="${loginId}">
+			<button type="submit" name="submiregist" class="submiregist">承認</button>
 			</form>
 			
 			<script th:inline="javascript">
@@ -46,6 +48,7 @@
 			}
 			</script>
 			
+
 		</div>
 	</article>
 </body>

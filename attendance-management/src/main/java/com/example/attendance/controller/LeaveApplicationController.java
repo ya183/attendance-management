@@ -147,6 +147,8 @@ public class LeaveApplicationController {
 		leaveApplication.setId(leaveApplicationId);
 
 		leaveApplicationRepository.save(leaveApplication);
+		
+		mv.addObject("registerSuccess",true);
 
 		String loginId = principal.getName();
 		mv.addObject("loginId", loginId);
