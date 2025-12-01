@@ -76,7 +76,7 @@ public class ChangeInformationController {
 		
 
 		mv.addObject("listRequest", listRequest);
-		mv.addObject("application_date", monthForm);
+		mv.addObject("yearMonth", monthForm);
 		mv.addObject("userId", userId);
 
 //		if (!listRequest.isEmpty()) {

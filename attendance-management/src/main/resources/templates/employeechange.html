@@ -17,9 +17,9 @@
 		<div class="content">
 			<h2 class="titlenew">社員検索/変更/削除</h2>
 
-			<form th:action="@{/employeechange}" method="post" id="monthForm">
+			<form th:action="@{/employeechange}" method="post" id="form">
 
-				<input type="text" name="employeename"/>
+				<input type="text" name="name"/>
 				<button type="submit" name="submitname" class="submitname">検索</button>
 
 			</form>
@@ -34,11 +34,15 @@
 
 				<tr th:each="list : ${listEmployee}">
 					<td th:text="${list.userId}"></td>
-					<td th:text="${list.name"></td>
-					<td th:if="${list.department_id}">
+					<td th:text="${list.name}"></td>
+					<td th:text="${list.department_name}">
 					</td>
-					<td><a
-						th:href="@{/changecorrect(requestNo=${list.id.requestNo})}">修正</a></td>
+					<td>
+					<a
+						th:href="@{/employeechangeregister(userId=${list.userId})}">変更</a></td>
+					<td>
+					<a
+						th:href="@{/employeedelete(userId=${list.userId})}">削除</a></td>
 				</tr>
 			</table>
 

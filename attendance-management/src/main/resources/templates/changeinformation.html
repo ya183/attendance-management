@@ -17,7 +17,7 @@
 
 			<form th:action="@{/changeinformation}" method="post" id="monthForm">
 			
-			<select name="application_date"
+			<select name="yearMonth"
 				onchange="document.getElementById('monthForm').submit()">
 				<option value="2025-07" th:selected="${yearMonth == '2025-07'}">2025/07</option>
 				<option value="2025-08" th:selected="${yearMonth == '2025-08'}">2025/08</option>
