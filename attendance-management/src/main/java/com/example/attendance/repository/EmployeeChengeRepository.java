@@ -10,9 +10,11 @@ import com.example.attendance.entity.Employee;
 @Repository
 public interface EmployeeChengeRepository extends JpaRepository<Employee,Integer>{
 	
-		List<Employee> findByNameLike(@Param("name") String name);
+		List<Employee> findByNameLikeOrderByUserIdAsc(@Param("name") String name);
 		
 		Employee findByUserId(@Param("userId") Integer userId);
+		
+		//Employee findByLoginId(@Param("name") String userId);
 		
 		//void deleteById(@Param("userId") Integer userId);
 }

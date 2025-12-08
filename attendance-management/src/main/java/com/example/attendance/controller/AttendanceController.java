@@ -1,5 +1,6 @@
 package com.example.attendance.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -30,6 +31,7 @@ import com.example.attendance.repository.AttendanceInformationRepository;
 import com.example.attendance.repository.AttendanceRepository;
 import com.example.attendance.service.AttendInfoService;
 import com.example.attendance.service.LoginService;
+import com.example.attendance.service.OvertimeCalculationService;
 
 import lombok.AllArgsConstructor;
 
@@ -47,6 +49,8 @@ public class AttendanceController {
 
 	private final AttendInfoService attendInfoService;
 
+	private final OvertimeCalculationService overtimeCalculationService;
+
 	// テスト用（コンソールにて値出力）
 //	@GetMapping("/test")
 //	public String testHash() {
@@ -63,8 +67,15 @@ public class AttendanceController {
 
 	// 一般ユーザーホーム画面表示
 	@GetMapping("/user/home")
-	public ModelAndView showHome(ModelAndView mv) {
+	public ModelAndView showHome(ModelAndView mv, Principal principal) {
 		mv.setViewName("userhome");
+		
+		Integer userId = Integer.valueOf(principal.getName());
+		BigDecimal overtime = overtimeCalculationService.getMonthOvertime(userId);
+		mv.addObject("overtime", overtime);
+		boolean overtimeAlert = overtime.compareTo(BigDecimal.valueOf(20)) > 0;
+        mv.addObject("overtimeAlert", overtimeAlert);
+		
 		mv.addObject("account", new Account());
 		return mv;
 	}
@@ -72,6 +83,8 @@ public class AttendanceController {
 	// 管理者ユーザーホーム画面表示
 	@GetMapping("/admin/home")
 	public ModelAndView showadminHome(ModelAndView mv) {
+
+		
 		mv.setViewName("adminhome");
 		mv.addObject("account", new Account());
 		return mv;
@@ -112,15 +125,15 @@ public class AttendanceController {
 		mv.addObject("account", null);
 		mv.addObject("yearMonth", null);
 		mv.addObject("attendanceinformation", null);
-		
+
 		return mv;
 	}
 
 	// 勤怠情報表示ボタン押下後（フォーム送信後の処理）
 	@PostMapping("/attendanceinformation/")
-	public ModelAndView attendanceInfoSearch(Principal principal,@RequestParam("inputDate") String yearMonth,
+	public ModelAndView attendanceInfoSearch(Principal principal, @RequestParam("inputDate") String yearMonth,
 			@RequestParam(value = "userId", required = false) Integer userId, ModelAndView mv) {
-		
+
 		// ログイン中のユーザーNullチェック
 		if (principal == null) {
 			// 未ログインならログインページへリダイレクト
@@ -131,19 +144,20 @@ public class AttendanceController {
 		Integer id;
 		// userIdがinteger型かどうか判断
 		try {
-			//　userIdを数値化して取得
+			// userIdを数値化して取得
 			id = Integer.valueOf(principal.getName());
 		} catch (NumberFormatException e) {
 			// Spring Securityに認証失敗として処理（/login/errorに遷移）
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
-		
+
 		// DBからユーザー情報取得
 		Account account = attendanceRepository.findByUserId(id);
-		
+
 		// ログイン中のユーザの月単位の勤怠情報を取得
-		List<Attendance_information> attendanceList = attendanceInformationRepository.findByUserIdAndYearMonth(account.getUserId(),yearMonth);
-		
+		List<Attendance_information> attendanceList = attendanceInformationRepository
+				.findByUserIdAndYearMonth(account.getUserId(), yearMonth);
+
 		mv.addObject("account", account);
 		mv.addObject("yearMonth", yearMonth);
 		mv.addObject("attendanceinformation", attendanceList);

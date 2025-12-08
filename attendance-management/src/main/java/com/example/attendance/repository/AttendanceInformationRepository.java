@@ -1,5 +1,6 @@
 package com.example.attendance.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,4 +41,13 @@ public interface AttendanceInformationRepository
 			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
 	int updateclockOut(@Param("userId") Integer userId, @Param("date") LocalDate date,
 			@Param("clock_out") LocalTime clock_in);
+	
+	// 残業時間計算
+	@Query(value = "SELECT SUM(overtime_hours) AS total "
+			+ "FROM attendance_information " +
+            "WHERE user_id = :userId AND date BETWEEN :start AND :end;",nativeQuery = true)
+	BigDecimal overtimeclculation(@Param("userId") Integer userId, @Param("start") LocalDate start,
+			@Param("end") LocalDate end);
+	
+	
 }

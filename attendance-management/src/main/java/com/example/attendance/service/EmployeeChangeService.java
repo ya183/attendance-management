@@ -29,7 +29,7 @@ public class EmployeeChangeService {
 		// 部分検索
 		String nameword = "%" + form.getName() + "%";
 
-		List<Employee> employeeList = employeeChengeRepository.findByNameLike(nameword);
+		List<Employee> employeeList = employeeChengeRepository.findByNameLikeOrderByUserIdAsc(nameword);
 
 		List<EmployeeDto> dtoList = new ArrayList<>();
 
@@ -89,6 +89,30 @@ public class EmployeeChangeService {
 		
 		
 		employeeChengeRepository.save(employee);
+		
+	}
+	
+	//登録処理
+	public void registerEmployee(EmployeeForm form) {
+		
+		Employee emp = new Employee();
+		emp.setName(form.getName());
+		
+		Department dep = departmentRepository.findById(form.getDepartmentId())
+                .orElseThrow(() -> new RuntimeException("部署が存在しません"));
+		emp.setDepartment(dep);
+		
+        emp.setGender(form.getGender());
+        emp.setAge(form.getAge());
+        emp.setEmail(form.getEmail());
+        emp.setAddress(form.getAddress());
+
+        emp.setUpdate_date(LocalDate.now());
+		emp.setUpdate_by(form.getName());
+		emp.setRegistration_date(LocalDate.now());
+		emp.setCreated_by(form.getName());
+
+        employeeChengeRepository.save(emp);
 		
 	}
 	
