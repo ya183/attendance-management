@@ -32,6 +32,7 @@ import com.example.attendance.repository.AttendanceRepository;
 import com.example.attendance.service.AttendInfoService;
 import com.example.attendance.service.LoginService;
 import com.example.attendance.service.OvertimeCalculationService;
+import com.ezample.attendance.dto.SearchOverTimeUserDto;
 
 import lombok.AllArgsConstructor;
 
@@ -83,10 +84,26 @@ public class AttendanceController {
 	// 管理者ユーザーホーム画面表示
 	@GetMapping("/admin/home")
 	public ModelAndView showadminHome(ModelAndView mv) {
-
-		
 		mv.setViewName("adminhome");
+		
+		int overuser = overtimeCalculationService.getAllUserOverTime();
+		mv.addObject("overuser",  overuser);
+		boolean overuserAlert = overuser > 0;
+		mv.addObject("overuserAlert",  overuserAlert);
+		
 		mv.addObject("account", new Account());
+		return mv;
+	}
+	
+	//管理者ユーザホーム画面検索結果
+	@GetMapping("/admin/overtime")
+	public ModelAndView overTimeAllUser(ModelAndView mv,@RequestParam(required = false) String yearMonth) {
+		mv.setViewName("adminhome");
+		
+		List<SearchOverTimeUserDto> userList = overtimeCalculationService.seachAllUserOverTime(yearMonth);
+		mv.addObject("userList", userList);
+		
+		mv.addObject("yearMonth", yearMonth);
 		return mv;
 	}
 

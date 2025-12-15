@@ -16,10 +16,49 @@
 
 			<h2>ホーム画面</h2>
 
-			<p>時間外20ｈ経過アラート</p>
-		
-	
-	</div>
+			<p>今月の残業アラート</p>
+			<div th:if="${overuserAlert}" class="alert-frame">
+
+				<div class="alert-title">時間外20h経過アラート</div>
+
+				<div class="alert-count">
+					<span th:text="${overuser}" style="color: red;"></span>件
+				</div>
+			</div>
+
+			<p></p>
+
+			<form id="monthForm" method="get" th:action="@{/admin/overtime}">
+				<select name="yearMonth"
+					onchange="document.getElementById('monthForm').submit()">
+					<option value="2025-07" th:selected="${yearMonth == '2025-07'}">2025/07
+						時間外経過メンバー</option>
+					<option value="2025-08" th:selected="${yearMonth == '2025-08'}">2025/08
+						時間外経過メンバー</option>
+					<option value="2025-09" th:selected="${yearMonth == '2025-09'}">2025/09
+						時間外経過メンバー</option>
+					<option value="2025-10" th:selected="${yearMonth == '2025-10'}">2025/10
+						時間外経過メンバー</option>
+					<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025/11
+						時間外経過メンバー</option>
+					<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025/12
+						時間外経過メンバー</option>
+				</select>
+			</form>
+
+			<table>
+				<tr>
+					<th>残業時間</th>
+					<th>従業員名</th>
+				</tr>
+				<tr th:each="userList : ${userList}">
+					<td th:text="${userList.totalOvertime}"></td>
+					<td th:text="${userList.userName}"></td>
+				</tr>
+			</table>
+
+
+		</div>
 	</article>
 </body>
 </html>

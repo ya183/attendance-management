@@ -83,7 +83,7 @@ public class LeaveApplicationController {
 			}
 			
 			mv.addObject("requestNo", requestNo);
-			
+			mv.addObject("monthForm", monthForm);
 
 			// URLパラメーターでuserIdとdateの情報を渡す
 			//mv.setViewName("redirect:/changerequest/info?userId=" + id + "&date=" + monthForm);

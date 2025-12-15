@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.attendance.entity.AttendanceInformationId;
 import com.example.attendance.entity.Attendance_information;
+import com.ezample.attendance.dto.SearchOverTimeUserDto;
 
 @Repository
 public interface AttendanceInformationRepository
@@ -42,12 +43,34 @@ public interface AttendanceInformationRepository
 	int updateclockOut(@Param("userId") Integer userId, @Param("date") LocalDate date,
 			@Param("clock_out") LocalTime clock_in);
 	
-	// 残業時間計算
+	// 残業時間計算（一般ユーザダッシュボード用）
 	@Query(value = "SELECT SUM(overtime_hours) AS total "
 			+ "FROM attendance_information " +
             "WHERE user_id = :userId AND date BETWEEN :start AND :end;",nativeQuery = true)
 	BigDecimal overtimeclculation(@Param("userId") Integer userId, @Param("start") LocalDate start,
 			@Param("end") LocalDate end);
 	
+	// 全社員残業時間計算（管理者ダッシュボード用）
+	@Query(value = "SELECT COUNT(*) AS over20 "
+			+ "FROM(SELECT user_id,SUM(overtime_hours) AS total "
+			+ "FROM attendance_information "
+			+ "WHERE date BETWEEN :start AND :end "
+			+ "GROUP BY user_id "
+			+ "HAVING SUM(overtime_hours) > 20 "
+			+ ")t",nativeQuery = true)
+	int overtimesum(@Param("start") LocalDate start,
+			@Param("end") LocalDate end);
+	
+	//管理者ダッシュボード用検索
+	@Query(value = "SELECT u.user_id AS userId,u.name AS userName,SUM(a.overtime_hours) AS total_overtime "
+			+ "FROM attendance_information a "
+			+ "JOIN Employee u ON a.user_id = u.user_id "
+			+ "WHERE a.date BETWEEN :start AND :end "
+			+ "GROUP BY u.user_id,u.name "
+			+ "HAVING SUM(overtime_hours) > 20 "
+			+ "ORDER BY u.user_id DESC ",nativeQuery = true)
+	List<SearchOverTimeUserDto> overtimeserch(@Param("start") LocalDate start,
+			@Param("end") LocalDate end);
+
 	
 }

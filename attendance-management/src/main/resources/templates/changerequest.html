@@ -25,12 +25,12 @@
 
 				<select name="application_date"
 					onchange="document.getElementById('monthForm').submit()">
-					<option value="2025-07" th:selected="${yearMonth == '2025-07'}">2025/07</option>
-					<option value="2025-08" th:selected="${yearMonth == '2025-08'}">2025/08</option>
-					<option value="2025-09" th:selected="${yearMonth == '2025-09'}">2025/09</option>
-					<option value="2025-10" th:selected="${yearMonth == '2025-10'}">2025/10</option>
-					<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025/11</option>
-					<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025/12</option>
+					<option value="2025-07" th:selected="${monthForm == '2025-07'}">2025/07</option>
+					<option value="2025-08" th:selected="${monthForm == '2025-08'}">2025/08</option>
+					<option value="2025-09" th:selected="${monthForm == '2025-09'}">2025/09</option>
+					<option value="2025-10" th:selected="${monthForm == '2025-10'}">2025/10</option>
+					<option value="2025-11" th:selected="${monthForm == '2025-11'}">2025/11</option>
+					<option value="2025-12" th:selected="${monthForm == '2025-12'}">2025/12</option>
 				</select>
 
 
@@ -48,9 +48,7 @@
 				<tr th:each="list : ${listRequest}">
 					<td th:text="${list.id.requestNo}"></td>
 					<td th:text="${list.application_date}"></td>
-					<td><span th:if="${list.status} == 1">申請中</span>
-					    <span th:if="${list.status} == 2">完了</span>
-					</td>
+					<td th:text="${list.requestStatusMaster.status_name}"></td>
 					<td><a
 						th:href="@{/changecorrect(requestNo=${list.id.requestNo})}">修正</a></td>
 				</tr>

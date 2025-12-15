@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">データ出力</h2>
+			
+			<div class="outputtitle">出力期間</div>
+			<p>出力期間を指定してください。</p>
+			
+			<form th:action="@{/output}" method="Get" id="monthForm">
+			
+			<select name="yearMonth">
+				<option value="2025-07" th:selected="${yearMonth == '2025-07'}">2025/07</option>
+				<option value="2025-08" th:selected="${yearMonth == '2025-08'}">2025/08</option>
+				<option value="2025-09" th:selected="${yearMonth == '2025-09'}">2025/09</option>
+				<option value="2025-10" th:selected="${yearMonth == '2025-10'}">2025/10</option>
+				<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025/11</option>
+				<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025/12</option>
+			</select>
+			
+			<br>
+			<br>
+			
+			<div class="outputtitle">出力するユーザー</div>
+			<p>出力するユーザーを入力してください。</p>
+			<input type="text" name="username" required>
+			<button type="submit" name="submitname">検索</button>
+			</form>
+			<br>
+			<div class="outputtitle">検索結果</div>
+			<table>
+
+				<tr>
+					<th>社員番号</th>
+					<th>従業員名</th>
+					<th>期間</th>
+				</tr>
+
+				<tr th:each="list : ${listEmployee}">
+					<td th:text="${list.userId}"></td>
+					<td th:text="${list.name}"></td>
+					<td th:text="${list.yearMonth}">
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+	</article>
+</body>
+</html>
