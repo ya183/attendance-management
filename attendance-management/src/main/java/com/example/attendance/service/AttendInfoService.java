@@ -49,7 +49,7 @@ public class AttendInfoService {
 			entity.setClock_in(f.getStartTime());
 			entity.setClock_out(f.getEndTime());
 			entity.setOvertime_hours(f.getOvertime());
-			entity.setStatus((short) f.getStatusAttend());
+			entity.setAttendanceStatus((short) f.getStatusAttend());
 			entity.setWorking_hours(f.getWorking());
 			return entity;
 

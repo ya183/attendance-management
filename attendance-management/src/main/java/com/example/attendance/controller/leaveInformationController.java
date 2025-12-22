@@ -16,13 +16,15 @@ import com.example.attendance.entity.LeaveApplicationId;
 import com.example.attendance.entity.Leave_application;
 import com.example.attendance.repository.ChangeInformationRepository;
 import com.example.attendance.repository.LeaveInformationRepository;
+import com.example.attendance.service.LeaveService;
 
 @Controller
 public class leaveInformationController {
 	
 	@Autowired
 	private LeaveInformationRepository leaveInformationRepository;
-	
+	@Autowired
+	private LeaveService leaveService;
 
 	// 休暇申請トップページ
 	@GetMapping("/leaveinformation")
@@ -56,7 +58,7 @@ public class leaveInformationController {
 		
 
 		mv.addObject("listRequest", listRequest);
-		mv.addObject("application_date", monthForm);
+		mv.addObject("monthForm", monthForm);
 		mv.addObject("userId", userId);
 
 //		if (!listRequest.isEmpty()) {
@@ -99,13 +101,10 @@ public class leaveInformationController {
 			@RequestParam("userId") Integer userId) {
 		
 
-		LeaveApplicationId leaveId = new LeaveApplicationId(userId,requestNo);
-		Leave_application datail = leaveInformationRepository.findById(leaveId).orElse(null);
+		boolean leaveSave = leaveService.approve (userId,requestNo);
 		
-		datail.setStatus((short)2);
-		Leave_application leaveSave = leaveInformationRepository.save(datail);
 		
-		if(leaveSave != null) {
+		if(leaveSave == true) {
 			mv.addObject("registerSuccess",true);
 		}else {
 			mv.addObject("registerSuccess",false);

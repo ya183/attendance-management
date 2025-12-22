@@ -17,6 +17,8 @@ public class EmployeeForm {
 	private String email;
 
 	private String address;
+	
+	private Short paidLeaveTotal;
 
 	public String getName() {
 		return name;
@@ -82,6 +84,14 @@ public class EmployeeForm {
 
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
+	}
+
+	public Short getPaidLeaveTotal() {
+		return paidLeaveTotal;
+	}
+
+	public void setPaidLeaveTotal(Short paidLeaveTotal) {
+		this.paidLeaveTotal = paidLeaveTotal;
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.example.attendance.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,5 +25,17 @@ public class Account {
 
 	@Column(name = "authority")
 	private Integer authority;
+	
+	@Column(name = "update_date")
+	private LocalDate update_date;
+
+	@Column(name = "update_by")
+	private String update_by;
+
+	@Column(name = "registration_date")
+	private LocalDate registration_date;
+
+	@Column(name = "created_by")
+	private String created_by;
 
 }

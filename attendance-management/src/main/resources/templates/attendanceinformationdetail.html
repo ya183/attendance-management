@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">勤怠情報修正</h2>
+
+			<form th:action="@{/attendanceinformation/detail}" method="post"
+				th:object="${attendance}">
+				<table border="1">
+
+					<tr>
+						<th>勤怠情報</th>
+						<td><select th:field="*{attendanceStatus}">
+								<option th:each="s : ${statusList}" th:value="${s.attendanceStatus}"
+									th:text="${s.status_name}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<th>出勤時刻</th>
+						<td><input type="time" th:field="*{clock_in}"></td>
+					</tr>
+					<tr>
+						<th>退勤時刻</th>
+						<td><input type="time" th:field="*{clock_out}"></td>
+					</tr>
+					<tr>
+						<th>休憩</th>
+						<td><input type="number" th:field="*{break_time}"></td>
+					</tr>
+					<tr>
+						<th>勤務時間</th>
+						<td><input type="number" th:field="*{working_hours}"></td>
+					</tr>
+					<tr>
+						<th>残業</th>
+						<td><input type="number" th:field="*{overtime_hours}"></td>
+					</tr>
+
+
+				</table>
+
+				<input type="hidden" name="date" th:field="*{id.date}"> <input
+					type="hidden" name="userId" th:field="*{id.userId}">
+				<button type="submit" name="submiregist" class="submiregist">修正</button>
+			</form>
+
+			<script th:inline="javascript">
+			if([[${registerSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
+
+
+		</div>
+	</article>
+</body>
+</html>

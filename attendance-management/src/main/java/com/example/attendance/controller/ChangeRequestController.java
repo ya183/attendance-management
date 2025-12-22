@@ -1,3 +1,8 @@
+/**
+ * 「変更申請」コントローラ
+ * 変更申請を管理するクラス
+ *
+ */
 package com.example.attendance.controller;
 
 import java.security.Principal;

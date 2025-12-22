@@ -1,3 +1,8 @@
+/**
+ * 「勤怠登録」コントローラ
+ * 出退勤を管理するクラス
+ *
+ */
 package com.example.attendance.controller;
 
 import java.security.Principal;

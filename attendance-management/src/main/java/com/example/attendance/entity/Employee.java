@@ -44,7 +44,7 @@ public class Employee {
 	private String address;
 
 	@Column(name = "paid_leave_total")
-	private Short paid_leave_total;
+	private Short paidLeaveTotal;
 
 	@Column(name = "paid_leave_used")
 	private Short paid_leave_used;

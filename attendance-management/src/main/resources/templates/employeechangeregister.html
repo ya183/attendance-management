@@ -35,21 +35,27 @@
 				</tr>
 				<tr>
 					<th>性別</th>
-					<td><input type="text" th:field="${form.gender}"></td>
+					<td><select th:field="*{gender}">
+					<option value="1">男</option>
+					<option value="2">女</option>
+					</select></td>
 				</tr>
 				<tr>
 					<th>年齢</th>
-					<td><input type="text" th:field="${form.age}"></td>
+					<td><input type="number" th:field="*{age}"></td>
 				</tr>
 				<tr>
 					<th>メールアドレス</th>
-					<td><input type="text" th:field="${form.email}"></td>
+					<td><input type="text" th:field="*{email}"></td>
 				</tr>
 				<tr>
 					<th>住所</th>
-					<td><input type="text" th:field="${form.address}"></td>
+					<td><input type="text" th:field="*{address}"></td>
 				</tr>
-				
+				<tr>
+					<th>総有給日数</th>
+					<td><input type="number" th:field="*{paidLeaveTotal}"></td>
+				</tr>
 				
 			</table>
 		

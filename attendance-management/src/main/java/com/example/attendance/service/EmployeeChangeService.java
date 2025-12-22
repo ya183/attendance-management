@@ -58,6 +58,7 @@ public class EmployeeChangeService {
 		empForm.setAge(empchange.getAge());
 		empForm.setEmail(empchange.getEmail());
 		empForm.setAddress(empchange.getAddress());
+		empForm.setPaidLeaveTotal(empchange.getPaidLeaveTotal());
 		
 
 		return empForm;
@@ -86,6 +87,7 @@ public class EmployeeChangeService {
 		employee.setAddress(form.getAddress());
 		employee.setUpdate_date(LocalDate.now());
 		employee.setUpdate_by(form.getName());
+		employee.setPaidLeaveTotal(form.getPaidLeaveTotal());
 		
 		
 		employeeChengeRepository.save(employee);

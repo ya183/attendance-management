@@ -33,12 +33,10 @@
 			<p>時間外時間（月単位）</p>
 			<p style="text-indent: 1em;">残業時間累計　<span style="color:red;"　th:text="${overtime}"></span>時間</p>
 			
-			<p><a th:href="@{/attendregister}">有給取得計算</a></p>
-			<!--  
 			<p>有給取得日数（年単位）</p>
-			<p style="text-indent: 1em;">有給消化日数</p>
-			<p style="text-indent: 1em;">残有給日数</p>
-			-->
+			<p style="text-indent: 1em;">有給消化日数　<span style="color:red;"　th:text="${emp.paid_leave_used}"></span>日</p>
+			<p style="text-indent: 1em;">残有給日数　<span style="color:red;"　th:text="${emp.paidLeaveTotal - emp.paid_leave_used}"></span>日</p>
+
 		</div>
 	</article>
 

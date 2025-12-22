@@ -1,27 +1,27 @@
+/**
+ * 管理者側「変更申請一覧」コントローラ
+ * 変更申請を管理するクラス
+ *
+ */
 package com.example.attendance.controller;
 
 import java.security.Principal;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.example.attendance.entity.ChangeRequestId;
 import com.example.attendance.entity.Change_request;
 import com.example.attendance.repository.ChangeInformationRepository;
-import com.example.attendance.repository.ChangeRequestRepository;
 
 @Controller
 public class ChangeInformationController {
-	
+
 	@Autowired
 	private ChangeInformationRepository changeInformationRepository;
-	
 
 	// 変更申請トップページ
 	@GetMapping("/changeinformation")
@@ -68,15 +68,13 @@ public class ChangeInformationController {
 		List<Change_request> listRequest = changeInformationRepository.findByYearMonth(monthForm);
 
 		System.out.println("検索件数: " + listRequest.size());
-		
+
 		if (!listRequest.isEmpty()) {
 			userId = listRequest.get(listRequest.size() - 1).getId().getRequestNo();
-	}
-		
-		
+		}
 
 		mv.addObject("listRequest", listRequest);
-		mv.addObject("yearMonth", monthForm);
+		mv.addObject("monthForm", monthForm);
 		mv.addObject("userId", userId);
 
 //		if (!listRequest.isEmpty()) {
@@ -91,48 +89,44 @@ public class ChangeInformationController {
 		mv.setViewName("changeinformation");
 		return mv;
 	}
-	
+
 	// 変更申請詳細
 	@GetMapping("/changedetail")
-	public ModelAndView changeDetail(ModelAndView mv, Principal principal,
-			@RequestParam("requestNo") Integer requestNo,
+	public ModelAndView changeDetail(ModelAndView mv, Principal principal, @RequestParam("requestNo") Integer requestNo,
 			@RequestParam("userId") Integer userId) {
 		mv.setViewName("changedetail");
 
-		ChangeRequestId changeId = new ChangeRequestId(userId,requestNo);
+		ChangeRequestId changeId = new ChangeRequestId(userId, requestNo);
 		Change_request datail = changeInformationRepository.findById(changeId).orElse(null);
-		
+
 		mv.addObject("loginId", changeId.getUserId());
 		mv.addObject("requestNo", changeId.getRequestNo());
-		
+
 		mv.addObject("applicationDate", datail.getApplication_date());
 		mv.addObject("changeDate", datail.getChange_date());
 		mv.addObject("revisedClockIn", datail.getRevised_clock_in());
 		mv.addObject("revisedClockOut", datail.getRevised_clock_out());
 		mv.addObject("reason", datail.getReason());
-		 System.out.println(requestNo);
-		
+		System.out.println(requestNo);
 
 		return mv;
 	}
-	
+
 	// 変更申請承認
 	@PostMapping("/changedetail")
 	public ModelAndView changeapprove(ModelAndView mv, Principal principal,
-			@RequestParam("requestNo") Integer requestNo,
-			@RequestParam("userId") Integer userId) {
-		
+			@RequestParam("requestNo") Integer requestNo, @RequestParam("userId") Integer userId) {
 
-		ChangeRequestId changeId = new ChangeRequestId(userId,requestNo);
+		ChangeRequestId changeId = new ChangeRequestId(userId, requestNo);
 		Change_request datail = changeInformationRepository.findById(changeId).orElse(null);
-		
-		datail.setStatus((short)2);
+
+		datail.setStatus((short) 2);
 		Change_request changeSave = changeInformationRepository.save(datail);
-		
-		if(changeSave != null) {
-			mv.addObject("registerSuccess",true);
-		}else {
-			mv.addObject("registerSuccess",false);
+
+		if (changeSave != null) {
+			mv.addObject("registerSuccess", true);
+		} else {
+			mv.addObject("registerSuccess", false);
 		}
 
 		mv.setViewName("changedetail");

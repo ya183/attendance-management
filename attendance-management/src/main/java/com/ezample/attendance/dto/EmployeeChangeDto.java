@@ -19,6 +19,8 @@ public class EmployeeChangeDto {
 
 	private String address;
 	
+	private Short paidLeaveTotal;
+	
 	
 
 }

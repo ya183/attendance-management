@@ -7,7 +7,8 @@ import java.time.LocalTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -44,6 +45,31 @@ public class Attendance_information {
 	private BigDecimal overtime_hours;
 	
 	@Column(name = "status")
-	private short status;
+	private short attendanceStatus;
+	
+	//外部キーを持つ側
+		@ManyToOne
+		@JoinColumn(
+				//attendance_information側のstatus
+				name = "status",
+				//attendance_status_master側のstatus
+				referencedColumnName = "status",
+				insertable = false,
+				updatable = false
+				)
+		private Attendance_status_master attendanceStatusMaster;
+	
+	
+	@Column(name = "update_date")
+	private LocalDate update_date;
+
+	@Column(name = "update_by")
+	private String update_by;
+
+	@Column(name = "registration_date")
+	private LocalDate registration_date;
+
+	@Column(name = "created_by")
+	private String created_by;
 
 }

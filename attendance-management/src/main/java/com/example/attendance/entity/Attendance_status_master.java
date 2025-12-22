@@ -9,13 +9,12 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "request_status_master")
+@Table(name = "attendance_status_master")
 @Data
-public class Request_status_master {
-	
+public class Attendance_status_master {
 	@Id
 	@Column(name = "status")
-	private short status;
+	private short attendanceStatus;
 	
 	@Column(name = "status_name")
 	private String status_name;

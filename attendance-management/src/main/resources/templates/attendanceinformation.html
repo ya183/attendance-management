@@ -53,25 +53,25 @@
 
 				<div th:if="${not #lists.isEmpty(attendanceinformation)}">
 				<tr>
-					<th>ユーザーID</th>
 					<th>日付</th>
+					<th>勤怠状況</th>
 					<th>出勤時刻</th>
 					<th>退勤時刻</th>
 					<th>休憩</th>
 					<th>勤務時間</th>
 					<th>残業</th>
-					<th>ステータス</th>
 				</tr>
 				</div>
 				<tr th:each="attend : ${attendanceinformation}">
-					<td th:text="${attend.id?.userId}"></td>
+				
 					<td th:text="${attend.id?.date}"></td>
+					<td th:text="${attend.attendanceStatusMaster.status_name}"></td>
 					<td th:text="${attend.clock_in}"></td>
 					<td th:text="${attend.clock_out}"></td>
 					<td th:text="${attend.break_time}"></td>
 					<td th:text="${attend.working_hours}"></td>
 					<td th:text="${attend.overtime_hours}"></td>
-					<td th:text="${attend.status}"></td>
+					<td><a th:href="@{/attendanceinformation/detail(userId=${attend.id?.userId},date=${attend.id?.date})}">修正</a></td>
 				</tr>
 			</table>
 		</div>

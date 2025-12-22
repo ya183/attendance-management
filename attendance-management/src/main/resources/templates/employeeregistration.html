@@ -44,7 +44,12 @@
 				
 				<tr>
 					<th>性別</th>
-					<td><input type="text" th:field="*{gender}"></td>
+					<td>
+					<select th:field="*{gender}">
+					<option value="1">男</option>
+					<option value="2">女</option>
+					</select>
+					</td>
 				</tr>
 				<tr>
 					<th>年齢</th>

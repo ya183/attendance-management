@@ -21,6 +21,15 @@ public class Change_request {
 	@EmbeddedId
 	private ChangeRequestId id;
 	
+	@ManyToOne
+	@JoinColumn(
+			name = "user_id",
+			referencedColumnName = "user_id",
+			insertable = false,
+			updatable = false
+			)
+	private Employee employee;
+	
 	@Column(name = "application_date")
 	private LocalDate application_date;
 	
@@ -50,5 +59,17 @@ public class Change_request {
 			updatable = false
 			)
 	private Request_status_master requestStatusMaster;
+	
+	@Column(name = "update_date")
+	private LocalDate update_date;
+
+	@Column(name = "update_by")
+	private String update_by;
+
+	@Column(name = "registration_date")
+	private LocalDate registration_date;
+
+	@Column(name = "created_by")
+	private String created_by;
 
 }
