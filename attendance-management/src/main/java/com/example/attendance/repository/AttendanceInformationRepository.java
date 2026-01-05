@@ -28,20 +28,20 @@ public interface AttendanceInformationRepository
 			@Param("yearMonth") String yearMonth);
 
 	// 出勤登録
-	@Modifying
-	@Transactional
-	@Query("UPDATE Attendance_information a " + "SET a.clock_in = :clock_in "
-			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
-	int updateclockIn(@Param("userId") Integer userId, @Param("date") LocalDate date,
-			@Param("clock_in") LocalTime clock_in);
+//	@Modifying
+//	@Transactional
+//	@Query("UPDATE Attendance_information a " + "SET a.clock_in = :clock_in "
+//			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
+//	int updateclockIn(@Param("userId") Integer userId, @Param("date") LocalDate date,
+//			@Param("clock_in") LocalTime clock_in);
 
 	// 退勤登録
-	@Modifying
-	@Transactional
-	@Query("UPDATE Attendance_information a " + "SET a.clock_out = :clock_out "
-			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
-	int updateclockOut(@Param("userId") Integer userId, @Param("date") LocalDate date,
-			@Param("clock_out") LocalTime clock_in);
+//	@Modifying
+//	@Transactional
+//	@Query("UPDATE Attendance_information a " + "SET a.clock_out = :clock_out "
+//			+ "WHERE a.id.userId = :userId AND a.id.date = :date")
+//	int updateclockOut(@Param("userId") Integer userId, @Param("date") LocalDate date,
+//			@Param("clock_out") LocalTime clock_in);
 	
 	// 残業時間計算（一般ユーザダッシュボード用）
 	@Query(value = "SELECT SUM(overtime_hours) AS total "

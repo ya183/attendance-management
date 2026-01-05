@@ -25,7 +25,13 @@ public class OvertimeCalculationService {
 		LocalDate start = now.withDayOfMonth(1);
 		LocalDate end = now.withDayOfMonth(now.lengthOfMonth());
 
-		return attendanceInformationRepository.overtimeclculation(userId, start, end);
+		BigDecimal overtime = attendanceInformationRepository.overtimeclculation(userId, start, end);
+		
+		if (overtime == null) {
+			return BigDecimal.ZERO;
+		}
+		
+		return overtime;
 
 	}
 	

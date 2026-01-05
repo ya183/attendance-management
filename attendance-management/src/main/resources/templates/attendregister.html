@@ -21,39 +21,48 @@
 				<span id="today"></span>
 			</p>
 
-			<!-- 共通のtimeInput -->
-			<input type="time" id="timeInput" name="timeInput">
+			<form th:action="@{/attendregister}" method="post">
+				<table>
+					<tr>
+						<td>
+							<!-- 出勤時間 -->
+						<th>出勤時間</th>
+						<td><input type="time" id="startInput" name="startInput">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- 退勤時間 -->
+						<th>退勤時間</th>
+						<td><input type="time" id="endInput" name="endInput">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- 休憩時間 -->
+						<th>休憩時間</th>
+						<td><input type="number" id="breakInput" name="breakInput">
+						</td>
+					</tr>
+				</table>
 
 
-			<!-- 出勤ボタン -->
-			<form th:action="@{/attendregister/clocin}" method="post">
 				<!-- 日付入力フォーム -->
 				<input type="hidden" id="dateInput" name="date"> <input
 					type="hidden" name="userId"
 					th:value="${account != null ? account.userId : ''}">
-				<button type="submit" name="submitname" class="submitname">出勤</button>
-			</form>
-
-			<!-- 退勤ボタン -->
-			<form th:action="@{/attendregister/clocout}" method="post">
-				<!-- 日付入力フォーム -->
-				<input type="hidden" id="dateInputOut" name="date"> <input
-					type="hidden" name="userId"
-					th:value="${account != null ? account.userId : ''}">
-				<button type="submit" name="outbutton" class="outbutton">退勤</button>
+				<button type="submit" name="submitname" class="submitname">登録</button>
 			</form>
 
 			<!-- JavaScriptで本日の日付を表示 -->
 			<script>
+			
 			// 日付の取得
 			const today = new Date();
-			
 			const days = ["日","月","火","水","木","金","土"];
-			
 			const dayOfWeek = days[today.getDay()];
 			
 			const formatted =
-			
 			today.getFullYear() + "年" +
 			(today.getMonth() + 1) + "月" +
 			today.getDate() + "日" +
@@ -61,39 +70,45 @@
 			
 			document.getElementById("today").textContent = formatted;
 			document.getElementById("dateInput").value = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
-			document.getElementById("dateInputOut").value = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
-
-			// timeInput
-		    const now = new Date();
-		    const hours = String(now.getHours()).padStart(2,'0');
-		    const minutes = String(now.getMinutes()).padStart(2,'0');
-		    timeInput.value = `${hours}:${minutes}`;
 		    
-		    // 共通のtimeInputの値を各formにコピー 
-		    //ページ内の全フォームを取得
+			</script>
+
+			<script>
+		    // 共通入力定義(サーバへ送るパラメータ名)
+		    const COMMON_INPUT = [
+		    	{id:"startInput", name: "startInput"},
+		    	{id:"endInput", name: "endInput"},
+		    	{id:"breakInput", name: "breakInput"}
+		    ]
+		    
+		    // form送信時にhidden追加
 		    document.querySelectorAll("form").forEach(form => {
 		    	//フォームが送信される直前に動くイベントを登録
 		    	form.addEventListener("submit",() =>{
 		    		//フォーム外にある共通の値を取得
-		    		const timeVal = document.getElementById("timeInput").value;
+		    		COMMON_INPUT.forEach(item => {
+       				 	const elem = document.getElementById(item.id);
+        				if (!elem) return;
+        				
 		    		//input要素を作成
 		    		const hidden = document.createElement("input");
 		    		hidden.type = "hidden";
-		    		hidden.name = "timeInput";
-		    		hidden.value = timeVal;
+		    		hidden.name = item.name;
+		    		hidden.value = elem.value;
+		    		
 		    		//hiddenを送信するformの中に追加
 		    		form.appendChild(hidden);
 		    	});
-		    });
-		    
-		    //document.getElementById("timeInput").value = currentTime;		    
+		    }); 
+			</script>
+
+
+			<script th:inline="javascript">
+			if([[${clockInSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
 			</script>
 			
-			<script th:if="${clockInSuccess}">
-            alert("出勤打刻が完了しました");
-            </script>
-
-
 
 		</div>
 	</article>

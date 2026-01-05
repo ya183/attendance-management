@@ -63,7 +63,9 @@ public class AttendanceController {
 		mv.setViewName("userhome");
 
 		Integer userId = Integer.valueOf(principal.getName());
+		//BigDecimal overtime = overtimeCalculationService.getMonthOvertime(userId);
 		BigDecimal overtime = overtimeCalculationService.getMonthOvertime(userId);
+		
 		mv.addObject("overtime", overtime);
 		boolean overtimeAlert = overtime.compareTo(BigDecimal.valueOf(20)) > 0;
 		mv.addObject("overtimeAlert", overtimeAlert);

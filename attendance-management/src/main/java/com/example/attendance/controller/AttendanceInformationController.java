@@ -212,6 +212,8 @@ public class AttendanceInformationController {
 
 		// 勤怠情報リスト取得
 		List<Attendance_status_master> statusList = attendanceStatusMasterRepository.findAll();
+		System.out.println("※※※※※" + attendance.getClock_in());
+		
 		mv.addObject("statusList", statusList);
 
 		mv.addObject("attendance", attendance);
