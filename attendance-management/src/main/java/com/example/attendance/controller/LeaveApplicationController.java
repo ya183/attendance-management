@@ -179,6 +179,9 @@ public class LeaveApplicationController {
 			
 			requestNo = leaveApplicationId.getRequestNo();
 			
+			Leave_application leaveApplication = leaveApplicationRepository.findById(leaveApplicationId).orElseThrow();
+			mv.addObject("leaveApplication", leaveApplication);
+			
 			mv.addObject("requestNo", requestNo);
 			 System.out.println(requestNo);
 			
@@ -204,29 +207,48 @@ public class LeaveApplicationController {
 				throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 			}
 			
-			LocalDate dateapp = LocalDate.parse(applicationDate);
-			LocalDate datecha = LocalDate.parse(changeDate);
-
-			Leave_application leaveApplication = new Leave_application();
-
-			leaveApplication.setApplication_date(dateapp);
-			leaveApplication.setChange_date(datecha);
-			leaveApplication.setReason(reason);
+//			LocalDate dateapp = LocalDate.parse(applicationDate);
+//			LocalDate datecha = LocalDate.parse(changeDate);
+//
+//			Leave_application leaveApplication = new Leave_application();
+//
+//			leaveApplication.setApplication_date(dateapp);
+//			leaveApplication.setChange_date(datecha);
+//			leaveApplication.setReason(reason);
+//			
+//			LeaveApplicationId leaveApplicationId;
 			
-			LeaveApplicationId leaveApplicationId;
-			
-		        // 更新処理
-			leaveApplicationId = new LeaveApplicationId(id, requestNo);
+			LeaveApplicationId leaveApplicationId = new LeaveApplicationId(id, requestNo);
 		    
-			leaveApplication.setId(leaveApplicationId);
+			Leave_application entity = leaveApplicationRepository.findById(leaveApplicationId).orElseThrow();;
 			
-			leaveApplicationRepository.save(leaveApplication);
+			// ---- 日付 ----
+		    if (applicationDate != null && !applicationDate.isBlank()) {
+		        entity.setApplication_date(LocalDate.parse(applicationDate));
+		    }
+
+		    if (changeDate != null && !changeDate.isBlank()) {
+		        entity.setChange_date(LocalDate.parse(changeDate));
+		    }
+		    // ---- 理由 ----
+		    if (reason != null && !reason.isBlank()) {
+		        entity.setReason(reason);
+		    }
+			
+		    boolean registerSuccess;
+			try {
+			leaveApplicationRepository.save(entity);
+			registerSuccess = true;
+			} catch (Exception e) {
+				registerSuccess = false;
+			}
+			mv.addObject("registerSuccess", registerSuccess);
+			mv.addObject("leaveApplication", entity);
 
 			String loginId = principal.getName();
 			mv.addObject("loginId", loginId);
 
 			return mv;
 		}
-	
 
 }

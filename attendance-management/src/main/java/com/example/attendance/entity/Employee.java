@@ -1,5 +1,6 @@
 package com.example.attendance.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -63,5 +64,8 @@ public class Employee {
 
 	@Column(name = "created_by")
 	private String created_by;
+	
+	@Column(name = "standard_work_hours")
+	private BigDecimal standard_work_hours;
 
 }

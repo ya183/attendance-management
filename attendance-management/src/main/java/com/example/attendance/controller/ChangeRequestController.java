@@ -30,18 +30,18 @@ import com.example.attendance.service.ChangeRequestService;
 @Controller
 public class ChangeRequestController {
 
-    private final LoginService loginService;
+	private final LoginService loginService;
 
 	@Autowired
 	private ChangeRequestRepository changeRequestRepository;
 
 	@Autowired
-    private ChangeRequestService changeRequestService;
+	private ChangeRequestService changeRequestService;
 
-    ChangeRequestController(LoginService loginService) {
-        this.loginService = loginService;
-    }
-	
+	ChangeRequestController(LoginService loginService) {
+		this.loginService = loginService;
+	}
+
 	// 変更申請トップページ
 	@GetMapping("/changerequest")
 	public ModelAndView register(ModelAndView mv, Principal principal,
@@ -53,15 +53,15 @@ public class ChangeRequestController {
 
 		return mv;
 	}
-	
+
 	// 変更申請ユーザ月単位で検索
 	@PostMapping("/changerequest")
-	public ModelAndView registerSearch(Principal principal,@RequestParam(value="application_date",required = false) String monthForm,
-			@RequestParam(value = "userId", required = false) Integer userId, 
+	public ModelAndView registerSearch(Principal principal,
+			@RequestParam(value = "application_date", required = false) String monthForm,
+			@RequestParam(value = "userId", required = false) Integer userId,
 			@RequestParam(value = "status", required = false) Integer status,
-			@RequestParam(value = "request_no", required = false) Integer requestNo,
-			ModelAndView mv) {
-		
+			@RequestParam(value = "request_no", required = false) Integer requestNo, ModelAndView mv) {
+
 		// ログイン中のユーザーNullチェック
 		if (principal == null) {
 			// 未ログインならログインページへリダイレクト
@@ -72,38 +72,38 @@ public class ChangeRequestController {
 		Integer id;
 		// userIdがinteger型かどうか判断
 		try {
-			//　userIdを数値化して取得
+			// userIdを数値化して取得
 			id = Integer.valueOf(principal.getName());
 		} catch (NumberFormatException e) {
 			// Spring Securityに認証失敗として処理（/login/errorに遷移）
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
-		
+
 //		if (monthForm == null || monthForm.isEmpty()) {
 //		    monthForm = YearMonth.now().toString(); 
 //		}
-		
+
 		// DBからユーザー情報取得
-		List<Change_request> listRequest = changeRequestRepository.findByUserIdAndYearMonth(id,monthForm);
-		
+		List<Change_request> listRequest = changeRequestRepository.findByUserIdAndYearMonth(id, monthForm);
+
 		System.out.println("検索件数: " + listRequest.size());
-		
+
 		mv.addObject("listRequest", listRequest);
 		mv.addObject("status", status);
-		
+
 		if (!listRequest.isEmpty()) {
-		    requestNo = listRequest.get(listRequest.size() - 1).getId().getRequestNo();
+			requestNo = listRequest.get(listRequest.size() - 1).getId().getRequestNo();
 		}
-		
+
 		mv.addObject("requestNo", requestNo);
 		mv.addObject("monthForm", monthForm);
 
 		// URLパラメーターでuserIdとdateの情報を渡す
-		//mv.setViewName("redirect:/changerequest/info?userId=" + id + "&date=" + monthForm);
+		// mv.setViewName("redirect:/changerequest/info?userId=" + id + "&date=" +
+		// monthForm);
 		mv.setViewName("changerequest");
 		return mv;
 	}
-	
 
 	// 変更申請新規登録
 	@GetMapping("/changenew")
@@ -126,7 +126,6 @@ public class ChangeRequestController {
 			@RequestParam(value = "revised_clock_in", required = false) String revisedClockIn,
 			@RequestParam(value = "revised_clock_out", required = false) String revisedClockOut,
 			@RequestParam(value = "reason", required = false) String reason) {
-		mv.setViewName("changenew");
 
 		Integer id;
 		// userIdがinteger型かどうか判断
@@ -142,41 +141,48 @@ public class ChangeRequestController {
 		LocalDate datecha = LocalDate.parse(changeDate);
 		LocalTime timein = LocalTime.parse(revisedClockIn);
 		LocalTime timeout = LocalTime.parse(revisedClockOut);
-		
-		//ChangeRequestId changeRequestId = new ChangeRequestId(id, requestNo);
+
+		// ChangeRequestId changeRequestId = new ChangeRequestId(id, requestNo);
 		Change_request changeRequest = new Change_request();
-		//changeRequest.setId(changeRequestId);
+		// changeRequest.setId(changeRequestId);
 		changeRequest.setApplication_date(dateapp);
 		changeRequest.setChange_date(datecha);
 		changeRequest.setRevised_clock_in(timein);
 		changeRequest.setRevised_clock_out(timeout);
 		changeRequest.setReason(reason);
-		//changeRequestRepository.save(changeRequest);
-		
+		// changeRequestRepository.save(changeRequest);
+
 		ChangeRequestId changeRequestId;
 		if (requestNo == null) {
-	        // request_no を自動採番
-	        int max = changeRequestRepository.getMaxRequestNo(id); // MAX+1 で採番
-	        int next = max + 1;
-	        changeRequestId = new ChangeRequestId(id, next);
-	        //changeRequest.setId(id);
+			// request_no を自動採番
+			int max = changeRequestRepository.getMaxRequestNo(id); // MAX+1 で採番
+			int next = max + 1;
+			changeRequestId = new ChangeRequestId(id, next);
+			// changeRequest.setId(id);
 
-	    } else {
-	        // 更新処理
-	        changeRequestId = new ChangeRequestId(id, requestNo);
-	    }
+		} else {
+			// 更新処理
+			changeRequestId = new ChangeRequestId(id, requestNo);
+		}
 		changeRequest.setId(changeRequestId);
-		
-		 changeRequestRepository.save(changeRequest);
-		
+
+		boolean registerSuccess;
+		try {
+			changeRequestRepository.save(changeRequest);
+			registerSuccess = true;
+		} catch (Exception e) {
+			registerSuccess = false;
+		}
+
+		mv.addObject("registerSuccess", registerSuccess);
 
 		String loginId = principal.getName();
 		mv.addObject("loginId", loginId);
-
+		mv.setViewName("changenew");
 		return mv;
 	}
-	
-	//　変更申請修正
+
+	// 変更申請修正
 	@GetMapping("/changecorrect")
 	public ModelAndView changeCorrect(ModelAndView mv, Principal principal,
 			@RequestParam("requestNo") Integer requestNo) {
@@ -184,7 +190,7 @@ public class ChangeRequestController {
 
 		String loginId = principal.getName();
 		mv.addObject("loginId", loginId);
-		
+
 		Integer id;
 		// userIdがinteger型かどうか判断
 		try {
@@ -194,18 +200,20 @@ public class ChangeRequestController {
 			// Spring Securityに認証失敗として処理（/login/errorに遷移）
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
-		
-		ChangeRequestId changeId = new ChangeRequestId(id,requestNo);
-		
+
+		ChangeRequestId changeId = new ChangeRequestId(id, requestNo);
+
 		requestNo = changeId.getRequestNo();
-		
+
+		Change_request changeRequest = changeRequestRepository.findById(changeId).orElseThrow();
+		mv.addObject("changeRequest", changeRequest);
+
 		mv.addObject("requestNo", requestNo);
-		 System.out.println(requestNo);
-		
+		System.out.println(requestNo);
 
 		return mv;
 	}
-	
+
 	@PostMapping("/changecorrect")
 	public ModelAndView changeCorrectRegist(ModelAndView mv, Principal principal,
 			@RequestParam(value = "request_no", required = false) Integer requestNo,
@@ -214,8 +222,8 @@ public class ChangeRequestController {
 			@RequestParam(value = "revised_clock_in", required = false) String revisedClockIn,
 			@RequestParam(value = "revised_clock_out", required = false) String revisedClockOut,
 			@RequestParam(value = "reason", required = false) String reason) {
-		mv.setViewName("changecorrect");
 		
+
 		Integer id;
 		// userIdがinteger型かどうか判断
 		try {
@@ -226,33 +234,86 @@ public class ChangeRequestController {
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
 		
-		LocalDate dateapp = LocalDate.parse(applicationDate);
-		LocalDate datecha = LocalDate.parse(changeDate);
-		LocalTime timein = LocalTime.parse(revisedClockIn);
-		LocalTime timeout = LocalTime.parse(revisedClockOut);
 		
-		//ChangeRequestId changeRequestId = new ChangeRequestId(id, requestNo);
-		Change_request changeRequest = new Change_request();
-		//changeRequest.setId(changeRequestId);
-		changeRequest.setApplication_date(dateapp);
-		changeRequest.setChange_date(datecha);
-		changeRequest.setRevised_clock_in(timein);
-		changeRequest.setRevised_clock_out(timeout);
-		changeRequest.setReason(reason);
-		//changeRequestRepository.save(changeRequest);
+//		LocalTime timein = null;
+//		if (revisedClockIn != null && !revisedClockIn.isBlank()) {
+//		    timein = LocalTime.parse(revisedClockIn);
+//		}
+//
+//		LocalTime timeout = null;
+//		if (revisedClockOut != null && !revisedClockOut.isBlank()) {
+//		    timeout = LocalTime.parse(revisedClockOut);
+//		}
+//
+//		LocalDate dateapp = LocalDate.parse(applicationDate);
+//		LocalDate datecha = LocalDate.parse(changeDate);
 		
-		ChangeRequestId changeRequestId;
+//		LocalTime timein = LocalTime.parse(revisedClockIn);
+//		LocalTime timeout = LocalTime.parse(revisedClockOut);
 		
-	        // 更新処理
-	        changeRequestId = new ChangeRequestId(id, requestNo);
-	    
-		changeRequest.setId(changeRequestId);
-		
-		 changeRequestRepository.save(changeRequest);
+		ChangeRequestId changeRequestId = new ChangeRequestId(id, requestNo);
 
+		Change_request entity =
+		    changeRequestRepository.findById(changeRequestId).orElseThrow();
+		
+		// ---- 日付 ----
+	    if (applicationDate != null && !applicationDate.isBlank()) {
+	        entity.setApplication_date(LocalDate.parse(applicationDate));
+	    }
+
+	    if (changeDate != null && !changeDate.isBlank()) {
+	        entity.setChange_date(LocalDate.parse(changeDate));
+	    }
+
+	    // ---- 時刻 ----
+	    if (revisedClockIn != null && !revisedClockIn.isBlank()) {
+	        entity.setRevised_clock_in(LocalTime.parse(revisedClockIn));
+	    }
+
+	    if (revisedClockOut != null && !revisedClockOut.isBlank()) {
+	        entity.setRevised_clock_out(LocalTime.parse(revisedClockOut));
+	    }
+
+	    // ---- 理由 ----
+	    if (reason != null && !reason.isBlank()) {
+	        entity.setReason(reason);
+	    }
+		
+		
+
+//		// ChangeRequestId changeRequestId = new ChangeRequestId(id, requestNo);
+//		Change_request changeRequest = new Change_request();
+//		// changeRequest.setId(changeRequestId);
+//		changeRequest.setApplication_date(dateapp);
+//		changeRequest.setChange_date(datecha);
+//		changeRequest.setRevised_clock_in(timein);
+//		changeRequest.setRevised_clock_out(timeout);
+//		changeRequest.setReason(reason);
+//		// changeRequestRepository.save(changeRequest);
+//
+//		ChangeRequestId changeRequestId;
+//
+//		// 更新処理
+//		changeRequestId = new ChangeRequestId(id, requestNo);
+//
+//		changeRequest.setId(changeRequestId);
+		
+		boolean registerSuccess;
+		try {
+			changeRequestRepository.save(entity);
+			registerSuccess = true;
+		} catch (Exception e) {
+			registerSuccess = false;
+		}
+
+		mv.addObject("registerSuccess", registerSuccess);
+		
 		String loginId = principal.getName();
 		mv.addObject("loginId", loginId);
-
+		
+		mv.addObject("changeRequest", entity);
+		
+		mv.setViewName("changecorrect");
 		return mv;
 	}
 

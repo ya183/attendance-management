@@ -25,8 +25,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.attendance.entity.Account;
 import com.example.attendance.entity.AttendanceInformationId;
 import com.example.attendance.entity.Attendance_information;
+import com.example.attendance.entity.Employee;
 import com.example.attendance.repository.AttendanceInformationRepository;
 import com.example.attendance.repository.AttendanceRepository;
+import com.example.attendance.repository.EmployeeChengeRepository;
 
 import java.time.Duration;
 import lombok.AllArgsConstructor;
@@ -43,6 +45,9 @@ public class AttendRegisterController {
 	@Autowired
 	private AttendanceInformationRepository attendInfoRepository;
 
+	@Autowired
+	private EmployeeChengeRepository employeeChengeRepository;
+
 	// 勤怠登録
 	@GetMapping("/attendregister")
 	public ModelAndView register(ModelAndView mv, Principal principal,
@@ -58,11 +63,12 @@ public class AttendRegisterController {
 	// 出勤登録
 	@PostMapping("/attendregister")
 	public ModelAndView clockinregister(ModelAndView mv, Principal principal,
-			@RequestParam(value = "userId", required = false) Integer userId, @RequestParam("date") String date,
-			@RequestParam("startInput") LocalTime clockIn, @RequestParam("endInput") LocalTime clockOut,
-			@RequestParam("breakInput") BigDecimal breakTime,
+			@RequestParam(value = "userId", required = false) Integer userId,
+			@RequestParam(value = "date", required = false) String date,
+			@RequestParam(value = "startInput", required = false) LocalTime clockIn,
+			@RequestParam(value = "endInput", required = false) LocalTime clockOut,
+			@RequestParam(value = "breakInput", required = false) BigDecimal breakTime,
 			RedirectAttributes redirectAttributes) {
-		mv.setViewName("redirect:/attendregister");
 
 		// ログイン中のユーザーNullチェック
 		if (principal == null) {
@@ -81,22 +87,41 @@ public class AttendRegisterController {
 			throw new UsernameNotFoundException("入力されたユーザーIDの形式が違います：" + principal.getName());
 		}
 
+		if (breakTime == null) {
+			breakTime = BigDecimal.ZERO;
+		}
+
+//		if (clockIn == null || clockOut == null) {
+//		    clockIn  = LocalTime.of(0, 0);
+//		    clockOut = LocalTime.of(0, 0);
+//		}
+
 		// 1. LocalDate に変換
 		LocalDate datestr = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-M-d"));
 
 		AttendanceInformationId pk = new AttendanceInformationId(id, datestr);
 		Attendance_information attendance = attendInfoRepository.findById(pk).orElseThrow();
 
+		if (clockIn == null || clockOut == null) {
+			attendance.setAttendanceStatus((short) 2);
+			attendInfoRepository.save(attendance);
+			return mv;
+		}
+
 		attendance.setClock_in(clockIn);
 		attendance.setClock_out(clockOut);
 		attendance.setBreak_time(breakTime);
-		
+
 		// ----------勤務時間計算--------------------
-		
+
+		// 時間
+		BigDecimal breaTimeHours = breakTime;
+
+		// 時間を分に変換
+		long breakMinutes = breaTimeHours.multiply(BigDecimal.valueOf(60)).longValueExact();
+
 		// 勤務時間をDurationで作成
-		Duration workingDuration =
-		        Duration.between(clockIn, clockOut)
-		                .minusMinutes(breakTime.longValue());
+		Duration workingDuration = Duration.between(clockIn, clockOut).minusMinutes(breakMinutes);
 
 		// 実務時間の時間部分を取り出す
 		long hours = workingDuration.toHours();
@@ -105,19 +130,61 @@ public class AttendRegisterController {
 
 		// BigDecimal型に変換
 		BigDecimal workingHours = BigDecimal.valueOf(hours)
-		        .add(BigDecimal.valueOf(minutes)
-		        .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP));
-		
+				.add(BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP));
+
 		// ------------------------------------------
-		
+
 		attendance.setWorking_hours(workingHours);
-		
-		try {
-		attendInfoRepository.save(attendance);
-		 redirectAttributes.addFlashAttribute("clockInSuccess", true);
-		} catch (Exception e) {
-		    redirectAttributes.addFlashAttribute("clockInSuccess", false);
+
+		// ----------残業時間計算--------------------
+
+		Employee employee = employeeChengeRepository.findById(attendance.getId().getUserId()).orElseThrow();
+
+		// 実勤務時間
+		Duration totalWorkingTime = Duration.between(clockIn, clockOut).minusMinutes(breakMinutes);
+
+		System.out.println("実務時間" + totalWorkingTime);
+
+		// 基準勤務時間
+		BigDecimal standardWorkHours = employee.getStandard_work_hours();
+
+		System.out.println("基準勤務時間" + standardWorkHours);
+
+		// 基準勤務時間をDurationに変換
+		Duration standardDuration = Duration
+				.ofMinutes(standardWorkHours.multiply(BigDecimal.valueOf(60)).longValueExact());
+
+		// 残業時間算出
+		Duration overTime = totalWorkingTime.minus(standardDuration);
+
+		if (overTime.isNegative()) {
+			overTime = Duration.ZERO;
 		}
+
+		BigDecimal overtimeHours = BigDecimal.valueOf(overTime.toMinutes()).divide(BigDecimal.valueOf(60), 2,
+				RoundingMode.DOWN);
+
+		// ------------------------------------------
+
+		attendance.setOvertime_hours(overtimeHours);
+
+		// ステータス変更
+//		if (clockOut != null) {
+		// 退勤
+		attendance.setAttendanceStatus((short) 3);
+//		} else {
+//		    // 勤務中
+//			attendance.setAttendanceStatus((short) 2);
+//		}
+
+		try {
+			attendInfoRepository.save(attendance);
+			redirectAttributes.addFlashAttribute("clockInSuccess", true);
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("clockInSuccess", false);
+		}
+
+		mv.setViewName("redirect:/attendregister");
 
 		return mv;
 	}

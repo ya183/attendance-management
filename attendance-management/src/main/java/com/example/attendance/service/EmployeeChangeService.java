@@ -59,6 +59,7 @@ public class EmployeeChangeService {
 		empForm.setEmail(empchange.getEmail());
 		empForm.setAddress(empchange.getAddress());
 		empForm.setPaidLeaveTotal(empchange.getPaidLeaveTotal());
+		empForm.setStandard_work_hours(empchange.getStandard_work_hours());
 		
 
 		return empForm;
@@ -88,7 +89,7 @@ public class EmployeeChangeService {
 		employee.setUpdate_date(LocalDate.now());
 		employee.setUpdate_by(form.getName());
 		employee.setPaidLeaveTotal(form.getPaidLeaveTotal());
-		
+		employee.setStandard_work_hours(form.getStandard_work_hours());
 		
 		employeeChengeRepository.save(employee);
 		

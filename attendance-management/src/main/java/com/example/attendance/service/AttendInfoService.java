@@ -28,7 +28,7 @@ public class AttendInfoService {
 	}
 
 	// 入力された1ヶ月分の勤怠レコードをDB更新
-	public void SaveAllList(List<AttendanceForm> attendForm) {
+	public void saveAllList(List<AttendanceForm> attendForm) {
 
 		// ログイン中のユーザID取得
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

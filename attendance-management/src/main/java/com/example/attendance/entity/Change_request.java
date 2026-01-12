@@ -46,7 +46,7 @@ public class Change_request {
 	private String reason;
 	
 	@Column(name = "status")
-	private short status = 1;
+	private Short status = 1;
 	
 	//外部キーを持つ側
 	@ManyToOne

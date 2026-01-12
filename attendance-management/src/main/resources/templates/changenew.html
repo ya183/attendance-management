@@ -49,6 +49,13 @@
 			<input type="hidden" name="request_no" th:value="${requestNo}">
 			<button type="submit" name="submiregist" class="submiregist">申請</button>
 			</form>
+			
+			<script th:inline="javascript">
+			if([[${registerSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
+			
 		</div>
 	</article>
 </body>

@@ -28,11 +28,11 @@
 					</tr>
 					<tr>
 						<th>出勤時刻</th>
-						<td><input type="time" th:value="${#temporals.format(attendance.clock_in, 'HH:mm')}"></td>
+						<td><input type="time" name="clock_in" th:value="${#temporals.format(attendance.clock_in, 'HH:mm')}"></td>
 					</tr>
 					<tr>
 						<th>退勤時刻</th>
-						<td><input type="time" th:value="${#temporals.format(attendance.clock_out, 'HH:mm')}"></td>
+						<td><input type="time" name="clock_out" th:value="${#temporals.format(attendance.clock_out, 'HH:mm')}"></td>
 					</tr>
 					<tr>
 						<th>休憩</th>

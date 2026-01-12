@@ -32,6 +32,7 @@ import com.example.attendance.service.LoginService;
 import com.example.attendance.service.OvertimeCalculationService;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -183,19 +184,29 @@ public class AttendanceInformationController {
 
 	// １ヶ月分の登録を受け取りDB更新
 	@PostMapping("/attendanceinformation/new")
-	public ModelAndView attendNewPost(@ModelAttribute("attendFormList") AttendanceFormList listform, ModelAndView mv) {
-
-		// HTML名をセット
-		mv.setViewName("attendnew");
+	public ModelAndView attendNewPost(@ModelAttribute("attendFormList") AttendanceFormList listform,
+			RedirectAttributes redirectAttributes, ModelAndView mv) {
 
 		// 1ヶ月分のデータを入手
 		List<AttendanceForm> form = listform.getAttendForm();
 
+		boolean attendSuccess;
+
 		// DB更新
-		attendInfoService.SaveAllList(form);
+		try {
+			attendInfoService.saveAllList(form);
+			attendSuccess = true;
+		} catch (Exception e) {
+			attendSuccess = false;
+		}
+
+		mv.addObject("attendSuccess", attendSuccess);
 
 		// 入力された１ヶ月分のデータをHTMLに渡す
 		mv.addObject("attendFormList", listform);
+
+		// HTML名をセット
+		mv.setViewName("attendnew");
 
 		return mv;
 
@@ -213,7 +224,7 @@ public class AttendanceInformationController {
 		// 勤怠情報リスト取得
 		List<Attendance_status_master> statusList = attendanceStatusMasterRepository.findAll();
 		System.out.println("※※※※※" + attendance.getClock_in());
-		
+
 		mv.addObject("statusList", statusList);
 
 		mv.addObject("attendance", attendance);
@@ -234,16 +245,46 @@ public class AttendanceInformationController {
 //		}
 
 	@PostMapping("/attendanceinformation/detail")
-	public ModelAndView attenddatailregister(@ModelAttribute("attendance") Attendance_information attendance) {
+	public ModelAndView attenddatailregister(@ModelAttribute("attendance") Attendance_information form) {
 
 		ModelAndView mv = new ModelAndView();
-		attendanceInformationRepository.save(attendance);
+		
+		AttendanceInformationId id = form.getId();
+		Attendance_information entity =
+	            attendanceInformationRepository.findById(id).orElseThrow();
+		
+		 // 未入力対策
+		 if (form.getClock_in() != null) {
+		        entity.setClock_in(form.getClock_in());
+		    }
+
+		    if (form.getClock_out() != null) {
+		        entity.setClock_out(form.getClock_out());
+		    }
+
+		    if (form.getBreak_time() != null) {
+		        entity.setBreak_time(form.getBreak_time());
+		    }
+
+		    if (form.getWorking_hours() != null) {
+		        entity.setWorking_hours(form.getWorking_hours());
+		    }
+
+		    if (form.getOvertime_hours() != null) {
+		        entity.setOvertime_hours(form.getOvertime_hours());
+		    }
+
+		    if (form.getAttendanceStatus() != 0) {
+		        entity.setAttendanceStatus(form.getAttendanceStatus());
+		    }
+	    
+		attendanceInformationRepository.save(entity);
 
 		// 勤怠情報リスト取得
 		List<Attendance_status_master> statusList = attendanceStatusMasterRepository.findAll();
 		mv.addObject("statusList", statusList);
 
-		mv.addObject("attendance", attendance);
+		mv.addObject("attendance", entity);
 		mv.addObject("registerSuccess", true);
 		mv.setViewName("attendanceinformationdetail");
 		return mv;

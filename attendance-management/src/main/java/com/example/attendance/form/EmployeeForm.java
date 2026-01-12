@@ -1,5 +1,7 @@
 package com.example.attendance.form;
 
+import java.math.BigDecimal;
+
 public class EmployeeForm {
 
 	private Integer userId;
@@ -19,6 +21,8 @@ public class EmployeeForm {
 	private String address;
 	
 	private Short paidLeaveTotal;
+	
+	private BigDecimal standard_work_hours;
 
 	public String getName() {
 		return name;
@@ -92,6 +96,14 @@ public class EmployeeForm {
 
 	public void setPaidLeaveTotal(Short paidLeaveTotal) {
 		this.paidLeaveTotal = paidLeaveTotal;
+	}
+
+	public BigDecimal getStandard_work_hours() {
+		return standard_work_hours;
+	}
+
+	public void setStandard_work_hours(BigDecimal standard_work_hours) {
+		this.standard_work_hours = standard_work_hours;
 	}
 	
 	

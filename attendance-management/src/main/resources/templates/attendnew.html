@@ -70,6 +70,12 @@
 
 				</table>
 			</form>
+			
+			<script th:inline="javascript">
+			if([[${attendSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
 
 		</div>
 	</article>

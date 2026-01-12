@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -30,9 +32,11 @@ public class Attendance_information {
 //	private LocalDate date;
 	
 	@Column(name = "clock_in")
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime clock_in;
 	
 	@Column(name = "clock_out")
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime clock_out;
 	
 	@Column(name = "break_time")
