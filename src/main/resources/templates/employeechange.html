@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+
+
+		<div class="content">
+			<h2 class="titlenew">社員検索/変更/削除</h2>
+
+			<form th:action="@{/employeechange}" method="post" id="form">
+
+				<input type="text" name="name" />
+				<button type="submit" name="submitname" class="submitname">検索</button>
+
+			</form>
+
+			<table>
+
+				<tr>
+					<th>社員番号</th>
+					<th>従業員名</th>
+					<th>部署名</th>
+				</tr>
+
+				<tr th:each="list : ${listEmployee}">
+					<td th:text="${list.userId}"></td>
+					<td th:text="${list.name}"></td>
+					<td th:text="${list.department_name}"></td>
+					<td><a
+						th:href="@{/employeechangeregister(userId=${list.userId})}">変更</a></td>
+					<td><a th:href="@{/employeedelete(userId=${list.userId})}">削除</a></td>
+				</tr>
+			</table>
+			<script th:inline="javascript">
+    if([[${registerSuccess}]] == true){
+        alert("削除が完了しました。");
+    }
+</script>
+
+
+		</div>
+	</article>
+</body>
+</html>

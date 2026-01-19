@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">変更登録画面</h2>
+			<form th:action="@{/employeechangeregister}" th:object="${form}" method="post">
+			<table border="1">
+				
+				<tr>
+					<th>氏名</th>
+					<td><input type="text" th:field="${form.name}"></td>
+				</tr>
+				<tr>
+					<th>所属部署</th>
+					<td>
+					<select th:field="${form.departmentId}">
+					<option th:each="dep : ${depList}"
+					th:value="${dep.departmentId}"
+					th:text="${dep.department_name}"
+					th:selected="${form.departmentId == dep.departmentId}"
+					></option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<th>性別</th>
+					<td><select th:field="*{gender}">
+					<option value="1">男</option>
+					<option value="2">女</option>
+					</select></td>
+				</tr>
+				<tr>
+					<th>年齢</th>
+					<td><input type="number" th:field="*{age}"></td>
+				</tr>
+				<tr>
+					<th>メールアドレス</th>
+					<td><input type="text" th:field="*{email}"></td>
+				</tr>
+				<tr>
+					<th>住所</th>
+					<td><input type="text" th:field="*{address}"></td>
+				</tr>
+				<tr>
+					<th>総有給日数</th>
+					<td><input type="number" th:field="*{paidLeaveTotal}"></td>
+				</tr>
+				
+				<tr>
+					<th>基準勤務時間</th>
+					<td><input type="number"  step="0.1" th:field="*{standard_work_hours}"></td>
+				</tr>
+				
+			</table>
+		
+			
+			<input type="hidden" name="userId" th:value="*{userId}">
+			
+			<button type="submit" name="submiregist" class="submiregist">登録</button>
+			</form>
+			
+			<script th:inline="javascript">
+			if([[${registerSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
+			
+
+		</div>
+	</article>
+</body>
+</html>

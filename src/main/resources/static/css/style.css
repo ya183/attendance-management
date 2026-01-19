@@ -1,0 +1,133 @@
+@charset "UTF-8";
+
+header {
+	display: flex;
+	justify-content: space-between;
+	background-color: #99CCFF;
+	padding: 10px 20px;
+	border: 2px solid #000;
+}
+
+
+
+.title { padding:20px;}
+
+.side {
+	background-color: #99CCFF;
+	border-right: 2px solid #000;
+	border-left: 2px solid #000;
+	width: 200px;
+	height: 1200px;
+	text-align: center;
+}
+
+.sidemenu {
+	padding-top: 20px;
+	width: 200px;
+	height: 40px;
+	border-bottom: 2px solid #000;
+	text-align: center;
+}
+
+.adminmenu{
+	padding-top: 20px;
+	text-align: left;
+	border-bottom: 2px solid #000;
+	color: #1a1aff;
+}
+
+.sidemenuchange{
+	width: 200px;
+	height: 40px;
+	border-bottom: 2px solid #000;
+	text-align: center
+}
+
+.content {
+	width: 1000px;
+	height: 800px;
+	text-align: left;
+	margin-left: 40px;
+}
+
+article {
+	display: flex;
+	
+}
+
+.title {
+	margin-left: 40px;
+}
+
+.userId {
+	margin-left: 200px;
+	margin-right: 40px;
+}
+
+.passname {
+	margin-left: 200px;
+	margin-right: 40px;
+}
+
+.submitname {
+	color: white;
+	background: #1a1aff;
+	margin-left: 600px;
+	padding: 5px;
+}
+
+.titlenew{
+	text-align: left !important;;
+}
+
+
+.outbutton {
+	color: white;
+	background: orange;
+	margin-left: 600px;
+	padding: 5px;
+}
+
+.titleregister{
+	background:rgb(255, 210, 128);
+	padding: 7px;
+}
+
+.submiregist{
+	color: white;
+	background: #1a1aff;
+	margin-left: 920px;
+	padding: 5px;
+}
+
+.headerName{
+	text-align: right;
+}
+
+
+.alert-frame {
+  width: 200px;
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.alert-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.alert-count {
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+}
+
+
+.outputtitle{
+	 background-color: #d6d3e6;
+    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 20px;
+}

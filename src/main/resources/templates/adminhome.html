@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>ホーム画面</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:insert="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+
+			<h2>ホーム画面</h2>
+
+			<p>今月の残業アラート</p>
+			<div th:if="${overuserAlert}" class="alert-frame">
+
+				<div class="alert-title">時間外20h経過アラート</div>
+
+				<div class="alert-count">
+					<span th:text="${overuser}" style="color: red;"></span>件
+				</div>
+			</div>
+
+			<p></p>
+
+			<form id="monthForm" method="get" th:action="@{/admin/overtime}">
+				<select name="yearMonth"
+					onchange="document.getElementById('monthForm').submit()">
+					<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025/11
+						時間外経過メンバー</option>
+					<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025/12
+						時間外経過メンバー</option>
+					<option value="2026-01" th:selected="${yearMonth == '2026-01'}">2026/01
+						時間外経過メンバー</option>
+					<option value="2026-02" th:selected="${yearMonth == '2026-02'}">2026/02
+						時間外経過メンバー</option>
+					<option value="2026-03" th:selected="${yearMonth == '2026-03'}">2026/03
+						時間外経過メンバー</option>
+					<option value="2026-04" th:selected="${yearMonth == '2026-04'}">2026/04
+						時間外経過メンバー</option>
+				</select>
+			</form>
+
+			<table>
+				<tr>
+					<th>残業時間</th>
+					<th>従業員名</th>
+				</tr>
+				<tr th:each="userList : ${userList}">
+					<td th:text="${userList.totalOvertime}"></td>
+					<td th:text="${userList.userName}"></td>
+				</tr>
+			</table>
+
+
+		</div>
+	</article>
+</body>
+</html>

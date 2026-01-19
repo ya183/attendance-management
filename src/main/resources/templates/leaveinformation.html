@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">休暇申請一覧</h2>
+
+			<form th:action="@{/leaveinformation}" method="post" id="monthForm">
+			
+			<select name="application_date"
+				onchange="document.getElementById('monthForm').submit()">
+				<option value="2025-11" th:selected="${monthForm == '2025-11'}">2025/11</option>
+				<option value="2025-12" th:selected="${monthForm == '2025-12'}">2025/12</option>
+				<option value="2026-01" th:selected="${monthForm == '2026-01'}">2026/01</option>
+				<option value="2026-02" th:selected="${monthForm == '2026-02'}">2026/02</option>
+				<option value="2026-03" th:selected="${monthForm == '2026-03'}">2026/03</option>
+				<option value="2026-04" th:selected="${monthForm == '2026-04'}">2026/04</option>
+			</select>
+
+			</form>
+			
+			<table>
+				
+				<tr>
+					<th>申請日</th>
+					<th>従業員名</th>
+				</tr>
+				
+				<tr th:each="list : ${listRequest}">
+					<td th:text="${list.application_date}"></td>
+					<td th:text="${list.employee.name}"></td>
+					<td><a th:href="@{/leavedetail(requestNo=${list.id.requestNo},userId=${list.id.userId})}">詳細</a></td>
+				</tr>
+			</table>
+		</div>
+	</article>
+</body>
+</html>

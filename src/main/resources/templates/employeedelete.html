@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">削除確認画面</h2>
+
+			以下の社員を削除してよろしいでしょうか？
+
+			<table>
+
+				<tr>
+					<th>社員番号</th>
+					<th>従業員名</th>
+					<th>部署名</th>
+				</tr>
+
+				<tr>
+					<td th:text="${form.userId}"></td>
+					<td th:text="${form.name}"></td>
+					<td th:text="${form.departmentName}"></td>
+				</tr>
+			</table>
+
+			<form th:action="@{/employeedelete}" method="post">
+				<input type="hidden" name="userId" th:value="${form.userId}">
+				<button type="submit" class="delete">はい</button>
+			</form>
+
+			<a th:href="@{/employeechange}">元のページに戻る</a>
+
+			
+
+		</div>
+	</article>
+</body>
+</html>

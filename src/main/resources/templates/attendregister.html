@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+			<h2 class="titlenew">勤怠登録</h2>
+
+			<p>以下の時刻で打刻します</p>
+
+			<p>
+				<span id="today"></span>
+			</p>
+
+			<form th:action="@{/attendregister}" method="post">
+				<table>
+					<tr>
+						<td>
+							<!-- 出勤時間 -->
+						<th>出勤時間</th>
+						<td><input type="time" id="startInput" name="startInput">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- 退勤時間 -->
+						<th>退勤時間</th>
+						<td><input type="time" id="endInput" name="endInput">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- 休憩時間 -->
+						<th>休憩時間</th>
+						<td><input type="number" id="breakInput" name="breakInput">
+						</td>
+					</tr>
+				</table>
+
+
+				<!-- 日付入力フォーム -->
+				<input type="hidden" id="dateInput" name="date"> <input
+					type="hidden" name="userId"
+					th:value="${account != null ? account.userId : ''}">
+				<button type="submit" name="submitname" class="submitname">登録</button>
+			</form>
+
+			<!-- JavaScriptで本日の日付を表示 -->
+			<script>
+			
+			// 日付の取得
+			const today = new Date();
+			const days = ["日","月","火","水","木","金","土"];
+			const dayOfWeek = days[today.getDay()];
+			
+			const formatted =
+			today.getFullYear() + "年" +
+			(today.getMonth() + 1) + "月" +
+			today.getDate() + "日" +
+			"(" + dayOfWeek + ")";
+			
+			document.getElementById("today").textContent = formatted;
+			document.getElementById("dateInput").value = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
+		    
+			</script>
+
+			<script>
+		    // 共通入力定義(サーバへ送るパラメータ名)
+		    const COMMON_INPUT = [
+		    	{id:"startInput", name: "startInput"},
+		    	{id:"endInput", name: "endInput"},
+		    	{id:"breakInput", name: "breakInput"}
+		    ]
+		    
+		    // form送信時にhidden追加
+		    document.querySelectorAll("form").forEach(form => {
+		    	//フォームが送信される直前に動くイベントを登録
+		    	form.addEventListener("submit",() =>{
+		    		//フォーム外にある共通の値を取得
+		    		COMMON_INPUT.forEach(item => {
+       				 	const elem = document.getElementById(item.id);
+        				if (!elem) return;
+        				
+		    		//input要素を作成
+		    		const hidden = document.createElement("input");
+		    		hidden.type = "hidden";
+		    		hidden.name = item.name;
+		    		hidden.value = elem.value;
+		    		
+		    		//hiddenを送信するformの中に追加
+		    		form.appendChild(hidden);
+		    	});
+		    }); 
+			</script>
+
+
+			<script th:inline="javascript">
+			if([[${clockInSuccess}]] == true){
+				alert("登録が完了しました。")
+			}
+			</script>
+			
+
+		</div>
+	</article>
+
+</body>
+</html>

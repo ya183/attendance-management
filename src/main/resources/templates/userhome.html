@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>ホーム画面</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+
+			<h2>ホーム画面</h2>
+
+			<p>時間外20ｈ経過アラート</p>
+
+			<table th:if="${overtimeAlert}">
+				<tr>
+					<th>残業時間</th>
+					<th>メッセージ</th>
+				</tr>
+				<tr>
+					<td th:text="${overtime}" style="color:red;"></td>
+					<td style="color:red;">当月の残業時間が20時間を超えました</td>
+				</tr>
+			</table>
+
+			<p>ダッシュボード</p>
+			<hr>
+			<p>時間外時間（月単位）</p>
+			<p style="text-indent: 1em;">残業時間累計　<span style="color:red;"　th:text="${overtime}"></span>時間</p>
+			
+			<p>有給取得日数（年単位）</p>
+			<p style="text-indent: 1em;">有給消化日数　<span style="color:red;"　th:text="${emp.paid_leave_used}"></span>日</p>
+			<p style="text-indent: 1em;">残有給日数　<span style="color:red;"　th:text="${emp.paidLeaveTotal - emp.paid_leave_used}"></span>日</p>
+
+		</div>
+	</article>
+
+</body>
+</html>

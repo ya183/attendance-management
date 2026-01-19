@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>ホーム画面</title>
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+
+	<article>
+		<div th:insert="fragments/sidebar :: sidebar"></div>
+		<div class="content">
+
+			<h2>勤怠情報</h2>
+
+			<form th:action="@{/attendanceinformation/}" method="post" id="monthForm">
+				
+				<input type="hidden" name="userId"
+					th:value="${account != null ? account.userId : ''}"> <select
+					name="inputDate" onchange="document.getElementById('monthForm').submit()">
+					<option value="2025-11" th:selected="${yearMonth == '2025-11'}">2025年11月度</option>
+					<option value="2025-12" th:selected="${yearMonth == '2025-12'}">2025年12月度</option>
+					<option value="2026-01" th:selected="${yearMonth == '2026-01'}">2026年01月度</option>
+					<option value="2026-02" th:selected="${yearMonth == '2026-02'}">2026年02月度</option>
+					<option value="2026-03" th:selected="${yearMonth == '2026-03'}">2026年03月度</option>
+					<option value="2026-04" th:selected="${yearMonth == '2026-04'}">2026年04月度</option>
+				</select>
+				<!--  
+				<button type="submit" name="submitname" class="submitname">表示</button>
+				-->
+				
+				<!-- 勤怠情報ボタン初回表示時 -->
+				<div th:if="${attendanceinformation != null}">
+				<!-- 表示ボタン表示時 -->
+				<div th:if="${#lists.isEmpty(attendanceinformation)}">
+				<a th:href="@{/attendanceinformation/new(date=${yearMonth})}">新規登録</a>
+				</div>
+				</div>
+			
+			</form>
+<!-- 
+			<form th:action="@{/attendanceinformation/new}" method="get">
+			
+				<div th:if="${#lists.isEmpty(attendanceinformation)}">
+				<input type="hidden" name="date" th:value="${yearMonth}">
+					<button type="submit" name="submitname" class="submitname">新規作成</button>
+				</div>
+			</form>
+-->
+			<table>
+
+				<div th:if="${not #lists.isEmpty(attendanceinformation)}">
+				<tr>
+					<th>日付</th>
+					<th>勤怠状況</th>
+					<th>出勤時刻</th>
+					<th>退勤時刻</th>
+					<th>休憩</th>
+					<th>勤務時間</th>
+					<th>残業</th>
+				</tr>
+				</div>
+				<tr th:each="attend : ${attendanceinformation}">
+				
+					<td th:text="${attend.id?.date}"></td>
+					<td th:text="${attend.attendanceStatusMaster.status_name}"></td>
+					<td th:text="${attend.clock_in}"></td>
+					<td th:text="${attend.clock_out}"></td>
+					<td th:text="${attend.break_time}"></td>
+					<td th:text="${attend.working_hours}"></td>
+					<td th:text="${attend.overtime_hours}"></td>
+					<td><a th:href="@{/attendanceinformation/detail(userId=${attend.id?.userId},date=${attend.id?.date})}">修正</a></td>
+				</tr>
+			</table>
+		</div>
+	</article>
+</body>
+</html>
