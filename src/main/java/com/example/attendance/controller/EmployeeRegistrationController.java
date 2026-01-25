@@ -51,7 +51,6 @@ public class EmployeeRegistrationController {
 		// 部署一覧
 		List<Department> depList = departmentRepository.findAll();
 		mv.addObject("depList", depList);
-		
 
 		return mv;
 	}
@@ -60,13 +59,17 @@ public class EmployeeRegistrationController {
 	@PostMapping("/employeeregistration")
 	public ModelAndView changeRegister(ModelAndView mv, Principal principal,
 			@ModelAttribute("form") EmployeeForm form) {
-		mv.setViewName("employeeregistration");
-		
-		employeeChangeService.registerEmployee(form);
-		mv.setViewName("employeeregistration");
-		mv.addObject("registerSuccess",true);
+		// mv.setViewName("employeeregistration");
 
-		
+		employeeChangeService.registerEmployee(form);
+
+		// 部署一覧を再セット
+		List<Department> depList = departmentRepository.findAll();
+		mv.addObject("depList", depList);
+
+		mv.setViewName("employeeregistration");
+		mv.addObject("registerSuccess", true);
+
 		String loginId = principal.getName();
 		mv.addObject("loginId", loginId);
 

@@ -30,5 +30,8 @@ public class Attendance_status_master {
 
 	@Column(name = "created_by")
 	private String created_by;
+	
+	@Column(name = "display_flag")
+	private Boolean displayFlag;
 
 }

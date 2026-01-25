@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">f.org">
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -14,6 +14,10 @@
 		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
 			<h2 class="titlenew">休暇申請詳細</h2>
+			
+			<div th:if="${errorMessage}" class="error-message">
+				<p th:text="${errorMessage}" style="color: red;"></p>
+			</div>
 			
 			<table border="1">
 				
@@ -39,7 +43,7 @@
 			<form th:action="@{/leavedetail}" method="post">
 			<input type="hidden" name="requestNo" th:value="${requestNo}">
 			<input type="hidden" name="userId" th:value="${loginId}">
-			<button type="submit" name="submiregist" class="submiregist">承認</button>
+			<button th:if="${status != 2}" type="submit" name="submiregist" class="submiregist">承認</button>
 			</form>
 			
 			<script th:inline="javascript">

@@ -34,11 +34,13 @@
 				<tr>
 					<th>申請日</th>
 					<th>従業員名</th>
+					<th>ステータス</th>
 				</tr>
 				
 				<tr th:each="list : ${listRequest}">
 					<td th:text="${list.application_date}"></td>
 					<td th:text="${list.employee.name}"></td>
+					<td th:text="${list.requestStatusMaster.status_name}"></td>
 					<td><a th:href="@{/leavedetail(requestNo=${list.id.requestNo},userId=${list.id.userId})}">詳細</a></td>
 				</tr>
 			</table>

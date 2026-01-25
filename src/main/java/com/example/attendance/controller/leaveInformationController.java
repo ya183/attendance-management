@@ -84,6 +84,11 @@ public class leaveInformationController {
 		LeaveApplicationId leaveId = new LeaveApplicationId(userId,requestNo);
 		Leave_application datail = leaveInformationRepository.findById(leaveId).orElse(null);
 		
+		if(datail.getStatus() == 2) {
+			mv.addObject("errorMessage","この申請は完了しているため承認できません。");
+			mv.addObject("status", datail.getStatus());
+		}
+		
 		mv.addObject("userName", datail.getEmployee().getName());
 		mv.addObject("loginId", leaveId.getUserId());
 		mv.addObject("requestNo", leaveId.getRequestNo());
@@ -99,21 +104,32 @@ public class leaveInformationController {
 	@PostMapping("/leavedetail")
 	public ModelAndView changeapprove(ModelAndView mv, Principal principal,
 			@RequestParam("requestNo") Integer requestNo,
-			@RequestParam("userId") Integer userId) {
+			@RequestParam("userId") Integer userId) {		
 		
-
-		boolean leaveSave = leaveService.approve (userId,requestNo);
+		LeaveApplicationId leaveId = new LeaveApplicationId(userId,requestNo);
+		Leave_application datail = leaveInformationRepository.findById(leaveId).orElse(null);
 		
-		
-		if(leaveSave == true) {
-			mv.addObject("registerSuccess",true);
+		//　ステータスが「完了」の場合
+		if(datail.getStatus() == 2) {
+			mv.setViewName("leavedetail");
+			return mv;
 		}else {
-			mv.addObject("registerSuccess",false);
+		boolean leaveSave = leaveService.approve (userId,requestNo);
+		mv.addObject("registerSuccess",leaveSave);
 		}
+		
+		// 更新後データを再取得
+		Leave_application updateLeave = leaveInformationRepository.findById(leaveId).orElse(null);
+		
+		mv.addObject("userName", updateLeave.getEmployee().getName());
+		mv.addObject("loginId", leaveId.getUserId());
+		mv.addObject("requestNo", leaveId.getRequestNo());
+		mv.addObject("applicationDate", updateLeave.getApplication_date());
+		mv.addObject("changeDate", updateLeave.getChange_date());
+		mv.addObject("reason", updateLeave.getReason());
 
 		mv.setViewName("leavedetail");
 		return mv;
 	}
-	
 
 }

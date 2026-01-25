@@ -67,7 +67,7 @@ public interface AttendanceInformationRepository
 			+ "JOIN Employee u ON a.user_id = u.user_id "
 			+ "WHERE a.date BETWEEN :start AND :end "
 			+ "GROUP BY u.user_id,u.name "
-			+ "HAVING SUM(overtime_hours) >= 20 "
+			+ "HAVING SUM(overtime_hours) > 20 "
 			+ "ORDER BY u.user_id DESC ",nativeQuery = true)
 	List<SearchOverTimeUserDto> overtimeserch(@Param("start") LocalDate start,
 			@Param("end") LocalDate end);

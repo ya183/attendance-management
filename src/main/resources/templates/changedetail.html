@@ -14,12 +14,16 @@
 		<div th:insert="fragments/sidebar :: sidebar"></div>
 		<div class="content">
 			<h2 class="titlenew">変更申請詳細</h2>
-			
+
+			<div th:if="${errorMessage}" class="error-message">
+				<p th:text="${errorMessage}" style="color: red;"></p>
+			</div>
+
 			<table border="1">
-				
+
 				<tr>
 					<th>申請者</th>
-					<td><span th:text="${userName}"></span> </td>
+					<td><span th:text="${userName}"></span></td>
 				</tr>
 				<tr>
 					<th>申請日</th>
@@ -41,21 +45,21 @@
 					<th>変更理由</th>
 					<td><span th:text="${reason}"></span></td>
 				</tr>
-				
-				
+
+
 			</table>
 			<form th:action="@{/changedetail}" method="post">
-			<input type="hidden" name="requestNo" th:value="${requestNo}">
-			<input type="hidden" name="userId" th:value="${userId}">
-			<button type="submit" name="submiregist" class="submiregist">承認</button>
+				<input type="hidden" name="requestNo" th:value="${requestNo}">
+				<input type="hidden" name="userId" th:value="${userId}">
+				<button th:if="${status != 2}" type="submit" name="submiregist" class="submiregist">承認</button>
 			</form>
-			
+
 			<script th:inline="javascript">
 			if([[${registerSuccess}]] == true){
 				alert("登録が完了しました。")
 			}
 			</script>
-			
+
 
 		</div>
 	</article>

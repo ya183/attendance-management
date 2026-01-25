@@ -68,7 +68,7 @@ public class AttendanceController {
 		BigDecimal overtime = overtimeCalculationService.getMonthOvertime(userId);
 
 		mv.addObject("overtime", overtime);
-		boolean overtimeAlert = overtime.compareTo(BigDecimal.valueOf(20)) >= 0;
+		boolean overtimeAlert = overtime.compareTo(BigDecimal.valueOf(20)) > 0;
 		mv.addObject("overtimeAlert", overtimeAlert);
 
 		Employee emp = employeeChengeRepository.findById(userId).orElseThrow((null));
@@ -106,6 +106,26 @@ public class AttendanceController {
 		mv.addObject("userList", userList);
 
 		mv.addObject("yearMonth", yearMonth);
+		
+		//　	20時間越えアラート判定	
+		long overuser = 0;
+
+		for (SearchOverTimeUserDto user : userList) {
+		    BigDecimal overtime = user.getTotalOvertime();
+
+		    if (overtime != null && overtime.compareTo(BigDecimal.valueOf(20)) > 0) {
+		        overuser++;
+		    }
+		}
+		
+		boolean overuserAlert = overuser > 0;
+		mv.addObject("overuserAlert", overuserAlert);
+		
+		//　20時間越えユーザ件数
+		List<SearchOverTimeUserDto> overUsers = overtimeCalculationService
+				.seachAllUserOverTime(YearMonth.now().toString());
+		mv.addObject("overuser", overUsers.size());
+		
 		return mv;
 	}
 

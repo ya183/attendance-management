@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.attendance.entity.ChangeRequestId;
 import com.example.attendance.entity.Change_request;
 import com.example.attendance.repository.ChangeInformationRepository;
@@ -101,6 +103,11 @@ public class ChangeInformationController {
 
 		ChangeRequestId changeId = new ChangeRequestId(userId, requestNo);
 		Change_request datail = changeInformationRepository.findById(changeId).orElse(null);
+		
+		if(datail.getStatus() == 2) {
+			mv.addObject("errorMessage","この申請は完了しているため承認できません。");
+			mv.addObject("status", datail.getStatus());
+		}
 
 		mv.addObject("userId", changeId.getUserId());
 		mv.addObject("userName", datail.getEmployee().getName());
@@ -111,7 +118,6 @@ public class ChangeInformationController {
 		mv.addObject("revisedClockIn", datail.getRevised_clock_in());
 		mv.addObject("revisedClockOut", datail.getRevised_clock_out());
 		mv.addObject("reason", datail.getReason());
-		System.out.println(requestNo);
 
 		return mv;
 	}
@@ -127,12 +133,32 @@ public class ChangeInformationController {
 //		datail.setStatus((short) 2);
 //		Change_request changeSave = changeInformationRepository.save(datail);
 		
-		try {
+		// ステータスが完了の場合申請不可
+		ChangeRequestId changeId = new ChangeRequestId(userId, requestNo);
+		Change_request datail = changeInformationRepository.findById(changeId).orElse(null);
+		
+		if(datail.getStatus() == 2) {
+//			mv.addObject("errorMessage","この申請は完了しているため承認できません。");
+			mv.setViewName("changedetail");
+			return mv;
+		}else {
 			changeRequestService.approve(userId, requestNo);
 			mv.addObject("registerSuccess", true);	
-		}catch(Exception e) {
-			mv.addObject("registerSuccess", false);
 		}
+//			mv.addObject("registerSuccess", false);
+//		}
+		
+		// 更新後データを再取得
+		Change_request updateChange = changeInformationRepository.findById(changeId).orElse(null);
+		mv.addObject("userId", changeId.getUserId());
+		mv.addObject("userName", updateChange.getEmployee().getName());
+		mv.addObject("requestNo", changeId.getRequestNo());
+
+		mv.addObject("applicationDate", updateChange.getApplication_date());
+		mv.addObject("changeDate", updateChange.getChange_date());
+		mv.addObject("revisedClockIn", updateChange.getRevised_clock_in());
+		mv.addObject("revisedClockOut", updateChange.getRevised_clock_out());
+		mv.addObject("reason", updateChange.getReason());
 		
 		mv.setViewName("changedetail");
 		return mv;

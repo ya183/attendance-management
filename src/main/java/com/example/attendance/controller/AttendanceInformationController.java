@@ -222,8 +222,9 @@ public class AttendanceInformationController {
 		Attendance_information attendance = attendanceInformationRepository.findById(id).orElseThrow();
 
 		// 勤怠情報リスト取得
-		List<Attendance_status_master> statusList = attendanceStatusMasterRepository.findAll();
-		System.out.println("※※※※※" + attendance.getClock_in());
+		// List<Attendance_status_master> statusList =
+		// attendanceStatusMasterRepository.findAll();
+		List<Attendance_status_master> statusList = attendanceStatusMasterRepository.findByDisplayFlagTrue();
 
 		mv.addObject("statusList", statusList);
 
@@ -248,36 +249,38 @@ public class AttendanceInformationController {
 	public ModelAndView attenddatailregister(@ModelAttribute("attendance") Attendance_information form) {
 
 		ModelAndView mv = new ModelAndView();
-		
+
 		AttendanceInformationId id = form.getId();
-		Attendance_information entity =
-	            attendanceInformationRepository.findById(id).orElseThrow();
-		
-		 // 未入力対策
-		 if (form.getClock_in() != null) {
-		        entity.setClock_in(form.getClock_in());
-		    }
+		Attendance_information entity = attendanceInformationRepository.findById(id).orElseThrow();
 
-		    if (form.getClock_out() != null) {
-		        entity.setClock_out(form.getClock_out());
-		    }
+		// 未入力対策
+		if (form.getAttendanceStatus() != 0) {
+			entity.setClock_in(form.getClock_in());
+		}
+		if (form.getClock_in() != null) {
+			entity.setClock_in(form.getClock_in());
+		}
 
-		    if (form.getBreak_time() != null) {
-		        entity.setBreak_time(form.getBreak_time());
-		    }
+		if (form.getClock_out() != null) {
+			entity.setClock_out(form.getClock_out());
+		}
 
-		    if (form.getWorking_hours() != null) {
-		        entity.setWorking_hours(form.getWorking_hours());
-		    }
+		if (form.getBreak_time() != null) {
+			entity.setBreak_time(form.getBreak_time());
+		}
 
-		    if (form.getOvertime_hours() != null) {
-		        entity.setOvertime_hours(form.getOvertime_hours());
-		    }
+		if (form.getWorking_hours() != null) {
+			entity.setWorking_hours(form.getWorking_hours());
+		}
 
-		    if (form.getAttendanceStatus() != 0) {
-		        entity.setAttendanceStatus(form.getAttendanceStatus());
-		    }
-	    
+		if (form.getOvertime_hours() != null) {
+			entity.setOvertime_hours(form.getOvertime_hours());
+		}
+
+		if (form.getAttendanceStatus() != 0) {
+			entity.setAttendanceStatus(form.getAttendanceStatus());
+		}
+
 		attendanceInformationRepository.save(entity);
 
 		// 勤怠情報リスト取得
