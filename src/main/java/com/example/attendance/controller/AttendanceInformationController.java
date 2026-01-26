@@ -1,6 +1,6 @@
 /**
  * 「勤怠情報」コントローラ
- * サイドメニューの勤怠管理押下時を管理するクラス
+ * サイドメニューの勤怠管理押下時を管理する
  *
  */
 package com.example.attendance.controller;

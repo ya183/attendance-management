@@ -44,13 +44,6 @@ public class AttendanceController {
 
 	private final OvertimeCalculationService overtimeCalculationService;
 
-	// テスト用（コンソールにて値出力）
-//	@GetMapping("/test")
-//	public String testHash() {
-//	    loginService.showHashedPassword("Passadm2");
-//	    return "login";
-//	}
-
 	// ログインページ表示
 	@GetMapping("/login")
 	public ModelAndView showLogin(ModelAndView mv) {
@@ -106,26 +99,26 @@ public class AttendanceController {
 		mv.addObject("userList", userList);
 
 		mv.addObject("yearMonth", yearMonth);
-		
-		//　	20時間越えアラート判定	
+
+		// 20時間越えアラート判定
 		long overuser = 0;
 
 		for (SearchOverTimeUserDto user : userList) {
-		    BigDecimal overtime = user.getTotalOvertime();
+			BigDecimal overtime = user.getTotalOvertime();
 
-		    if (overtime != null && overtime.compareTo(BigDecimal.valueOf(20)) > 0) {
-		        overuser++;
-		    }
+			if (overtime != null && overtime.compareTo(BigDecimal.valueOf(20)) > 0) {
+				overuser++;
+			}
 		}
-		
+
 		boolean overuserAlert = overuser > 0;
 		mv.addObject("overuserAlert", overuserAlert);
-		
-		//　20時間越えユーザ件数
+
+		// 20時間越えユーザ件数
 		List<SearchOverTimeUserDto> overUsers = overtimeCalculationService
 				.seachAllUserOverTime(YearMonth.now().toString());
 		mv.addObject("overuser", overUsers.size());
-		
+
 		return mv;
 	}
 
